@@ -7,5 +7,6 @@ test("renvoie le message complet", () => {
 test("renvoie une chaîne non vide", () => {
   const msg = getMessage();
   expect(typeof msg).toBe("string")
+  
   expect(msg.length).toBeGreaterThan(0);
 });
