@@ -46,11 +46,12 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t docker.io/${{ secrets.DOCKER_USERNAME }}/image-lab0:latest .
+          docker build -t docker.io/${{ secrets.DOCKERHUB_USERNAME }}/image-lab0:latest .
 
       - name: Push image to Docker Hub
         run: |
-          docker push docker.io/${{ secrets.DOCKER_USERNAME }}/image-lab0:latest
+          docker push docker.io/${{ secrets.DOCKERHUB_USERNAME }}/image-lab0:latest
+
 
  
  
