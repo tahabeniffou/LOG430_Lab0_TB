@@ -3,8 +3,8 @@ version: "3.11"
 services:
   app:
     build: .                 # construit l’image à partir du Dockerfile
-    image: hello-node        # nom local de l’image (facultatif mais pratique)
-    container_name: hello-node
+    image: Image_LAB0       # nom local de l’image (facultatif mais pratique)
+    container_name: Image_LAB0
 
     # ports:                 # inutile ici – pas de serveur HTTP
     #   - "3000:3000"
