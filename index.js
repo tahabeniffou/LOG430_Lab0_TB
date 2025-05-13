@@ -1,0 +1,1 @@
+console.log("👋 Hello World depuis ma VM !");

@@ -1,0 +1,20 @@
+{
+  "name": "log430_lab0_tb",
+  "version": "1.0.0",
+  "description": "Repos pour le lab de log430",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tahabeniffou/LOG430_Lab0_TB.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tahabeniffou/LOG430_Lab0_TB/issues"
+  },
+  "homepage": "https://github.com/tahabeniffou/LOG430_Lab0_TB#readme"
+}
