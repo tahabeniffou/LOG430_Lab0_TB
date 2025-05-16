@@ -17,7 +17,7 @@ Autour de ce noyau très simple, le dépôt rassemble tout le nécessaire pour g
 
 - Enfin, le workflow GitHub Actions (.github/workflows/ci.yml) automatise la chaîne : lint → tests → build Docker → push sur Docker Hub. Chaque push ou pull‑request déclenche ces étapes, assurant qu’aucune régression n’atteint la branche principale.
 
-📝 Partie 2 — Étapes pour utiliser le projet Partie 2 — Étapes pour utiliser le projet
+📝 Partie 2 — Étapes pour utiliser le projet
 
 1️⃣ Cloner le dépôt
 
