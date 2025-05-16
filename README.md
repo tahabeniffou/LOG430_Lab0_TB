@@ -26,20 +26,32 @@ Autour de ce noyau très simple, le dépôt rassemble tout le nécessaire pour g
   - (Facultatif) Node.js 20 si tu veux tout lancer sans conteneur
 
 3️⃣ Construire & lancer via Docker Compose
+
 docker compose up --build          # interactif
+
 docker compose up -d --build       # en arrière‑plan
 
 4️⃣ Lancer en local (hors Docker)
+
 npm install   # dépendances
+
 npm run lint  # qualité
+
 npm test      # tests unitaires
+
 npm start     # exécution
 
 5️⃣ Pipeline CI/CD
+
 Chaque push ou PR déclenche automatiquement :
+
   - Lint (npm run lint)
+    
   - Tests (npm test)
+    
   - Build de l’image Docker
+    
   - Push sur Docker Hub → docker.io/<user>/hello-node:latest
+    
 ![image](https://github.com/user-attachments/assets/5ddcd83d-6ced-4da3-a2db-e9376efcaf90)
 
