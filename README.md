@@ -9,11 +9,11 @@ Autour de ce noyau très simple, le dépôt rassemble tout le nécessaire pour g
 
 - Le dossier __tests__/ héberge un test Jest qui vérifie que la fonction retourne bien le texte attendu.
 
-- Les règles ESLint, définies dans .eslintrc.json, imposent un style homogène et détectent les erreurs potentielles dès l’écriture.
+- Les règles ESLint imposent un style homogène et détectent les erreurs potentielles dès l’écriture.
 
 - Un Dockerfile basé sur node:20‑alpine génère une image extrêmement légère, tandis que .dockerignore exclut du build les fichiers inutiles (git, tests, modules locaux…).
 
-- Le fichier docker-compose.yml orchestre le lancement local : une seule commande suffit pour construire l’image (si nécessaire) puis exécuter le conteneur.
+- Le fichier docker-compose.yml orchestre le lancement local : une seule commande suffit pour construire l’image puis exécuter le conteneur.
 
 - Enfin, le workflow GitHub Actions (.github/workflows/ci.yml) automatise la chaîne : lint → tests → build Docker → push sur Docker Hub. Chaque push ou pull‑request déclenche ces étapes, assurant qu’aucune régression n’atteint la branche principale.
 
@@ -22,7 +22,9 @@ Autour de ce noyau très simple, le dépôt rassemble tout le nécessaire pour g
 1️⃣ Cloner le dépôt
 
 2️⃣ Prérequis
+
   - Docker Engine + Compose v2
+    
   - (Facultatif) Node.js 20 si tu veux tout lancer sans conteneur
 
 3️⃣ Construire & lancer via Docker Compose
