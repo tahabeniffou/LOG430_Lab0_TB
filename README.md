@@ -20,17 +20,21 @@ Autour de ce noyau très simple, le dépôt rassemble tout le nécessaire pour g
 📝 Partie 2 — Étapes pour utiliser le projet Partie 2 — Étapes pour utiliser le projet
 
 1️⃣ Cloner le dépôt
+
 2️⃣ Prérequis
   - Docker Engine + Compose v2
   - (Facultatif) Node.js 20 si tu veux tout lancer sans conteneur
+
 3️⃣ Construire & lancer via Docker Compose
 docker compose up --build          # interactif
 docker compose up -d --build       # en arrière‑plan
+
 4️⃣ Lancer en local (hors Docker)
 npm install   # dépendances
 npm run lint  # qualité
 npm test      # tests unitaires
 npm start     # exécution
+
 5️⃣ Pipeline CI/CD
 Chaque push ou PR déclenche automatiquement :
   - Lint (npm run lint)
