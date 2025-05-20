@@ -1,0 +1,21 @@
+@startuml VueCasUtilisationPOS_Vertical
+
+actor "Employé" as Emp
+
+rectangle "Système de caisse (POS)" {
+
+  usecase UC1 as "1. Rechercher un produit"
+  usecase UC2 as "2. Effectuer une vente"
+  usecase UC5 as "3. Afficher total d’une vente"
+  usecase UC3 as "4. Annuler une vente (retour)"
+  usecase UC4 as "5. Consulter le stock"
+
+}
+
+Emp --> UC1
+Emp --> UC2
+Emp --> UC5
+Emp --> UC3
+Emp --> UC4
+
+@enduml

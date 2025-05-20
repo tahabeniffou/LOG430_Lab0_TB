@@ -1,0 +1,18 @@
+@startuml VueDeploiement2Tier
+
+node "Machine locale (VM)" {
+  
+  node "Application Console (Node.js)" {
+    component "Interface CLI"
+    component "Logique métier"
+    component "ORM Sequelize"
+  }
+
+  database "Base de données SQLite" {
+    [database.sqlite]
+  }
+
+  "ORM Sequelize" --> "database.sqlite" : Connexion locale (fichier)
+}
+
+@enduml

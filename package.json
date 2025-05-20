@@ -4,15 +4,17 @@
   "description": "Repos pour le lab de log430",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "lint": "eslint .",
-    "test": "jest --ci"
-  },
+  "start": "node src/server.js",
+  "dev": "nodemon src/server.js",
+  "lint": "eslint .",
+  "test": "jest --ci"
+},
   "devDependencies": {
     "@eslint/js": "^9.26.0",
     "eslint": "^9.26.0",
     "globals": "^16.1.0",
-    "jest": "^29.7.0"
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.10"
   },
   "repository": {
     "type": "git",
@@ -24,5 +26,10 @@
   "bugs": {
     "url": "https://github.com/tahabeniffou/LOG430_Lab0_TB/issues"
   },
-  "homepage": "https://github.com/tahabeniffou/LOG430_Lab0_TB#readme"
+  "homepage": "https://github.com/tahabeniffou/LOG430_Lab0_TB#readme",
+  "dependencies": {
+    "express": "^5.1.0",
+    "sequelize": "^6.37.7",
+    "sqlite3": "^5.1.7"
+  }
 }

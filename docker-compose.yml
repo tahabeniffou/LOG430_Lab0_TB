@@ -1,12 +1,11 @@
 version: "3.11"
 
 services:
-  app:
-    build: .                 # construit l’image à partir du Dockerfile
-    image: image-lab0      # nom local de l’image (facultatif mais pratique)
-    container_name: image-lab0
-
-    # ports:                 # inutile ici – pas de serveur HTTP
-    #   - "3000:3000"
-    # volumes:               # exemple pour recharger le code sans rebuild
-    #   - ./:/app
+  pos-app:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    restart: unless-stopped

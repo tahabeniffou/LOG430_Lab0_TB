@@ -1,0 +1,36 @@
+@startuml VueImplementation_Classes
+
+package "Module Présentation" {
+  [appConsole.js]
+}
+
+package "Module Logique métier" {
+  [controllers/salesController.js]
+  [controllers/productController.js]
+  [controllers/stockController.js]
+}
+
+package "Module Persistance (ORM)" {
+  [models/Produit.js]
+  [models/Categorie.js]
+  [models/Vente.js]
+  [models/LigneVente.js]
+  [models/Utilisateur.js]
+  [models/Paiement.js]
+  [models/index.js]
+}
+
+[appConsole.js] --> [controllers/salesController.js]
+[appConsole.js] --> [controllers/productController.js]
+
+[controllers/salesController.js] --> [models/Vente.js]
+[controllers/salesController.js] --> [models/LigneVente.js]
+[controllers/salesController.js] --> [models/Produit.js]
+[controllers/salesController.js] --> [models/Paiement.js]
+
+[controllers/productController.js] --> [models/Produit.js]
+[controllers/productController.js] --> [models/Categorie.js]
+
+[controllers/stockController.js] --> [models/Produit.js]
+
+@enduml
