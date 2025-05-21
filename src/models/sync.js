@@ -1,7 +1,11 @@
 const sequelize = require('./index');
-require('./Product');
-require('./Sale');
+require('./Produit');
+require('./Categorie');
+require('./Vente');
+require('./Utilisateur');
+require('./LigneVente');
+require('./Paiement');
 
-sequelize.sync({ force: false })
-  .then(() => console.log('Base de données synchronisée'))
-  .catch(console.error);
+sequelize.sync({ force: false }).then(() => {
+  console.log('Base de données synchronisée');
+});

@@ -1,3 +1,4 @@
+require('./models/sync');
 const { enregistrerVente } = require('./controllers/salesController');
 const readline = require('readline');
 
@@ -24,3 +25,39 @@ async function main() {
 }
 
 main();
+
+const readline = require('readline');
+
+function menu() {
+  console.log('\n=== Menu Caisse POS ===');
+  console.log('1. Rechercher un produit');
+  console.log('2. Effectuer une vente');
+  console.log('3. Annuler une vente');
+  console.log('4. Consulter le stock');
+  console.log('5. Quitter');
+
+  rl.question('Choix : ', (choix) => {
+    switch (choix.trim()) {
+      case '1':
+        // appeler recherche produit
+        break;
+      case '2':
+        // appeler vente
+        break;
+      case '3':
+        // retour
+        break;
+      case '4':
+        // afficher stock
+        break;
+      case '5':
+        rl.close();
+        break;
+      default:
+        console.log('Option invalide.');
+        menu();
+    }
+  });
+}
+
+menu();
