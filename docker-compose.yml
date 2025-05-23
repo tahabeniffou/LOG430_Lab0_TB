@@ -3,9 +3,7 @@ version: "3.11"
 services:
   pos-app:
     build: .
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./:/app
-      - /app/node_modules
-    restart: unless-stopped
+    container_name: pos-app
+    command: node src/appConsole.js
+    stdin_open: true     # ← rend le terminal interactif (stdin)
+    tty: true            # ← alloue un terminal (comme -t)

@@ -1,37 +1,58 @@
 const sequelize = require('../models');
-const Product = require('../models/Product');
-const Sale = require('../models/Sale');
+const Produit = require('../models/Produit');
+const Vente = require('../models/Vente');
+const LigneVente = require('../models/LigneVente');
+const Paiement = require('../models/Paiement');
 
-async function enregistrerVente(produits) {
+async function enregistrerVente(produits, utilisateurId) {
   const transaction = await sequelize.transaction();
-
   try {
-    const nouvelleVente = await Sale.create({ total: 0 }, { transaction });
-
+    const vente = await Vente.create({ total: 0, date: new Date(), UtilisateurId: utilisateurId }, { transaction });
     let total = 0;
-    for (const p of produits) {
-      const produit = await Product.findByPk(p.id, { transaction });
 
-      if (!produit || produit.stock < p.quantite) {
-        throw new Error('Produit indisponible ou stock insuffisant.');
-      }
+    for (const item of produits) {
+      const produit = await Produit.findByPk(item.id, { transaction });
+      if (!produit || produit.stock < item.qte) throw new Error('Stock insuffisant');
 
-      total += produit.prix * p.quantite;
-      produit.stock -= p.quantite;
-
+      produit.stock -= item.qte;
       await produit.save({ transaction });
+
+      const sousTotal = produit.prix * item.qte;
+      total += sousTotal;
+
+      await LigneVente.create({ quantite: item.qte, sousTotal, ProduitId: produit.id, VenteId: vente.id }, { transaction });
     }
 
-    nouvelleVente.total = total;
-    await nouvelleVente.save({ transaction });
+    vente.total = total;
+    await vente.save({ transaction });
+    await Paiement.create({ moyen: 'carte', montant: total, date: new Date(), VenteId: vente.id }, { transaction });
 
     await transaction.commit();
-    return nouvelleVente;
-
-  } catch (error) {
+    console.log('✔ Vente enregistrée');
+  } catch (e) {
     await transaction.rollback();
-    throw error;
+    console.error('Erreur transactionnelle :', e.message);
   }
 }
 
-module.exports = { enregistrerVente };
+async function annulerVente(venteId) {
+  const transaction = await sequelize.transaction();
+  try {
+    const lignes = await LigneVente.findAll({ where: { VenteId: venteId }, transaction });
+    for (const ligne of lignes) {
+      const produit = await Produit.findByPk(ligne.ProduitId, { transaction });
+      produit.stock += ligne.quantite;
+      await produit.save({ transaction });
+    }
+    await LigneVente.destroy({ where: { VenteId: venteId }, transaction });
+    await Paiement.destroy({ where: { VenteId: venteId }, transaction });
+    await Vente.destroy({ where: { id: venteId }, transaction });
+    await transaction.commit();
+    console.log('✔ Vente annulée et stock rétabli');
+  } catch (e) {
+    await transaction.rollback();
+    console.error('Erreur lors de l’annulation :', e.message);
+  }
+}
+
+module.exports = { enregistrerVente, annulerVente };
