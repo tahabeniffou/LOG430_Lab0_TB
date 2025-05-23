@@ -1,7 +1,24 @@
-const Categorie = require('../src/models/Categorie');
-const sequelize = require('../src/models');
+const { Sequelize, DataTypes } = require('sequelize');
 
-beforeAll(() => sequelize.sync({ force: true }));
+let sequelize;
+let Categorie;
+
+beforeAll(async () => {
+  sequelize = new Sequelize('sqlite::memory:', { logging: false });
+
+  Categorie = sequelize.define('Categorie', {
+    nom: {
+      type: DataTypes.STRING,
+      allowNull: false
+    }
+  });
+
+  await sequelize.sync({ force: true });
+});
+
+afterAll(async () => {
+  await sequelize.close();
+});
 
 test('Créer une catégorie', async () => {
   const c = await Categorie.create({ nom: 'Confiseries' });

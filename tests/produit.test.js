@@ -1,7 +1,22 @@
-const Produit = require('../src/models/Produit');
-const sequelize = require('../src/models');
+const { Sequelize, DataTypes } = require('sequelize');
 
-beforeAll(() => sequelize.sync({ force: true }));
+let sequelize, Produit;
+
+beforeAll(async () => {
+  sequelize = new Sequelize('sqlite::memory:', { logging: false });
+
+  Produit = sequelize.define('Produit', {
+    nom: DataTypes.STRING,
+    prix: DataTypes.FLOAT,
+    stock: DataTypes.INTEGER
+  });
+
+  await sequelize.sync({ force: true });
+});
+
+afterAll(async () => {
+  await sequelize.close();
+});
 
 test('Créer un produit valide', async () => {
   const p = await Produit.create({ nom: 'Fanta', prix: 2.0, stock: 20 });

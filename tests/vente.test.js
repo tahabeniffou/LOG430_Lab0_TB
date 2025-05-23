@@ -1,8 +1,29 @@
-const Vente = require('../src/models/Vente');
-const Utilisateur = require('../src/models/Utilisateur');
-const sequelize = require('../src/models');
+const { Sequelize, DataTypes } = require('sequelize');
 
-beforeAll(() => sequelize.sync({ force: true }));
+let sequelize, Vente, Utilisateur;
+
+beforeAll(async () => {
+  sequelize = new Sequelize('sqlite::memory:', { logging: false });
+
+  Utilisateur = sequelize.define('Utilisateur', {
+    nom: DataTypes.STRING,
+    role: DataTypes.STRING
+  });
+
+  Vente = sequelize.define('Vente', {
+    total: DataTypes.FLOAT,
+    date: DataTypes.DATE
+  });
+
+  Utilisateur.hasMany(Vente);
+  Vente.belongsTo(Utilisateur);
+
+  await sequelize.sync({ force: true });
+});
+
+afterAll(async () => {
+  await sequelize.close();
+});
 
 test('Créer une vente liée à un utilisateur', async () => {
   const user = await Utilisateur.create({ nom: 'Léo', role: 'Caissier' });
