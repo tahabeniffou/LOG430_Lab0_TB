@@ -1,9 +1,10 @@
-version: "3.11"
-
 services:
   pos-app:
     build: .
     container_name: pos-app
     command: node src/appConsole.js
-    stdin_open: true     # ← rend le terminal interactif (stdin)
-    tty: true            # ← alloue un terminal (comme -t)
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./data:/app/data
+

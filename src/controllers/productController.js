@@ -1,5 +1,5 @@
-const Produit = require('../models/Produit');
-const Categorie = require('../models/Categorie');
+const Produit = require('../Models/Produit');
+const Categorie = require('../Models/Categorie');
 
 async function rechercherProduitParNom(nom) {
   const produits = await Produit.findAll({
