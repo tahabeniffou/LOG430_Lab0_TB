@@ -4,9 +4,9 @@ const { Separator } = require('inquirer');
 
 const { rechercherProduitParNom, afficherStock } = require('./controllers/productController');
 const { enregistrerVente, annulerVente } = require('./controllers/salesController');
-const Utilisateur = require('./Models/Utilisateur');
-const Vente = require('./Models/Vente');
-const Paiement = require('./Models/Paiement');
+const Utilisateur = require('./models/Utilisateur');
+const Vente = require('./models/Vente');
+const Paiement = require('./models/Paiement');
 
 // 🔒 Sélection de l’utilisateur actif
 async function selectionnerUtilisateur() {

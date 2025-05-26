@@ -1,10 +1,33 @@
+version: "3.11"
+
 services:
+  db:
+    image: postgres:15
+    container_name: pos-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: posuser
+      POSTGRES_PASSWORD: pospass
+      POSTGRES_DB: posdb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
   pos-app:
     build: .
     container_name: pos-app
-    command: node src/appConsole.js
+    depends_on:
+      - db
+    environment:
+      POSTGRES_USER: posuser
+      POSTGRES_PASSWORD: pospass
+      POSTGRES_DB: posdb
+      POSTGRES_HOST: db
+    volumes:
+      - .:/app
+    working_dir: /app
     stdin_open: true
     tty: true
-    volumes:
-      - ./data:/app/data
+    command: node src/appConsole.js
 
+volumes:
+  pgdata:

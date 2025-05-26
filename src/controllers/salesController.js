@@ -1,8 +1,8 @@
-const sequelize = require('../Models');
-const Produit = require('../Models/Produit');
-const Vente = require('../Models/Vente');
-const LigneVente = require('../Models/LigneVente');
-const Paiement = require('../Models/Paiement');
+const sequelize = require('../models');
+const Produit = require('../models/Produit');
+const Vente = require('../models/Vente');
+const LigneVente = require('../models/LigneVente');
+const Paiement = require('../models/Paiement');
 
 async function enregistrerVente(produits, utilisateurId) {
   const transaction = await sequelize.transaction();

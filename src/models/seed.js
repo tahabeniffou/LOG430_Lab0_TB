@@ -1,53 +1,66 @@
+// src/models/seed.js
 const sequelize = require('./index');
-const Produit = require('./Produit');
 const Categorie = require('./Categorie');
+const Produit = require('./Produit');
+const Utilisateur = require('./Utilisateur');
 const Vente = require('./Vente');
 const LigneVente = require('./LigneVente');
-const Utilisateur = require('./Utilisateur');
 const Paiement = require('./Paiement');
 
 async function seed() {
   try {
-    console.log('🔄 Synchronisation de la base...');
+    // 1. Synchroniser les tables (supprime et recrée tout)
     await sequelize.sync({ force: true });
+    console.log('Tables créées.');
 
-    console.log('🧩 Insertion des catégories...');
+    // 2. Catégories
     const boissons = await Categorie.create({ nom: 'Boissons' });
     const snacks = await Categorie.create({ nom: 'Snacks' });
 
-    console.log('🧩 Insertion des produits...');
-    const produit1 = await Produit.create({ nom: 'Coca-Cola', prix: 2.5, stock: 100, CategorieId: boissons.id });
-    const produit2 = await Produit.create({ nom: 'Pepsi', prix: 2.3, stock: 80, CategorieId: boissons.id });
-    const produit3 = await Produit.create({ nom: 'Chips BBQ', prix: 1.99, stock: 50, CategorieId: snacks.id });
-    const produit4 = await Produit.create({ nom: 'Barre chocolatée', prix: 1.5, stock: 40, CategorieId: snacks.id });
+    // 3. Produits
+    const coca     = await Produit.create({ nom: 'Coca-Cola',           prix: 2.5, stock: 100, CategorieId: boissons.id });
+    const pepsi    = await Produit.create({ nom: 'Pepsi',               prix: 2.3, stock:  80, CategorieId: boissons.id });
+    const chips    = await Produit.create({ nom: 'Chips BBQ',           prix: 1.99,stock:  50, CategorieId: snacks.id   });
+    const chocobar = await Produit.create({ nom: 'Barre chocolatée',    prix: 1.5, stock:  40, CategorieId: snacks.id   });
 
-    console.log('🧑 Insertion des utilisateurs...');
-    const employe1 = await Utilisateur.create({ nom: 'Alice', role: 'Caissière' });
-    const employe2 = await Utilisateur.create({ nom: 'Bob', role: 'Caissier' });
+    // 4. Utilisateurs (caissiers)
+    const alice = await Utilisateur.create({ nom: 'Alice', role: 'Caissière' });
+    const bob   = await Utilisateur.create({ nom: 'Bob',   role: 'Caissier'   });
 
-    console.log('🧾 Création d\'une vente...');
+    // 5. Une vente exemple
     const vente1 = await Vente.create({
       date: new Date(),
-      total: 5.80,
-      UtilisateurId: employe1.id
+      total: 2.5 + 3.98,     // Coca + 2×Chips
+      UtilisateurId: alice.id
     });
 
-    console.log('📦 Lignes de vente...');
-    await LigneVente.create({ quantite: 1, sousTotal: 2.5, ProduitId: produit1.id, VenteId: vente1.id });
-    await LigneVente.create({ quantite: 2, sousTotal: 3.3, ProduitId: produit3.id, VenteId: vente1.id });
+    // 6. Lignes de vente
+    await LigneVente.create({
+      VenteId:   vente1.id,
+      ProduitId: coca.id,
+      quantite:  1,
+      sousTotal: 2.5
+    });
+    await LigneVente.create({
+      VenteId:   vente1.id,
+      ProduitId: chips.id,
+      quantite:  2,
+      sousTotal: 2 * 1.99
+    });
 
-    console.log('💳 Paiement...');
+    // 7. Paiement pour cette vente
     await Paiement.create({
-      moyen: 'carte',
-      montant: 5.80,
-      date: new Date(),
-      VenteId: vente1.id
+      VenteId: vente1.id,
+      moyen:   'carte',
+      montant: vente1.total,
+      date:    new Date()
     });
 
-    console.log('✅ Base de données remplie avec succès.');
+    console.log('Données initiales insérées avec succès !');
     await sequelize.close();
-  } catch (error) {
-    console.error('❌ Erreur pendant le seed :', error);
+    process.exit(0);
+  } catch (err) {
+    console.error('Erreur lors du seed:', err);
     process.exit(1);
   }
 }
