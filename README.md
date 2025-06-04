@@ -39,6 +39,7 @@ Pour accéder à la console interactive POS :
 ```sh
 docker exec -it pos-api bash
 node src/maisonMereConsole.js
+```
 
 ### 4. Arrêter l’application
 
