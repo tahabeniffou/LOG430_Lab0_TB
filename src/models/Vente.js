@@ -4,7 +4,8 @@ const Utilisateur = require('./Utilisateur');
 
 const Vente = sequelize.define('Vente', {
   total: DataTypes.FLOAT,
-  date: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
+  date: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
+  magasinId: { type: DataTypes.INTEGER, allowNull: false }
 });
 
 Vente.belongsTo(Utilisateur);

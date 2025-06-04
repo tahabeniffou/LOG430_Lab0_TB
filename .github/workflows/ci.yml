@@ -2,9 +2,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main ,LOG430_Lab1]
+    branches: [ main ,LOG430_Lab1,LOG430_Lab2]
   pull_request:
-    branches: [ main ,LOG430_Lab1]
+    branches: [ main ,LOG430_Lab1,LOG430_Lab2]
 
 jobs:
   lint:

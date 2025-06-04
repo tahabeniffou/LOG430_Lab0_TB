@@ -28,6 +28,10 @@
   },
   "homepage": "https://github.com/tahabeniffou/LOG430_Lab0_TB#readme",
   "dependencies": {
+    "axios": "^1.9.0",
+    "chalk": "^5.4.1",
+    "cli-table3": "^0.6.5",
+    "cors": "^2.8.5",
     "express": "^5.1.0",
     "inquirer": "^8.2.6",
     "pg": "^8.16.0",

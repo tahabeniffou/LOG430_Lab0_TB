@@ -1,5 +1,21 @@
 @startuml VueLogiquePOS_Étendue
 
+class MaisonMere {
+  +id: Integer
+  +nom: String
+}
+
+class Magasin {
+  +id: Integer
+  +nom: String
+  +adresse: String
+}
+
+class CentreLogistique {
+  +id: Integer
+  +nom: String
+}
+
 class Produit {
   +id: Integer
   +nom: String
@@ -37,10 +53,15 @@ class Paiement {
   +date: DateTime
 }
 
-Categorie "1" --> "n" Produit : contient >
+MaisonMere "1" o-- "*" Magasin : supervise >
+Magasin "1" o-- "*" Produit : possède >
+Magasin "1" o-- "*" Utilisateur : emploie >
+Magasin "1" o-- "*" Vente : réalise >
+Categorie "1" o-- "*" Produit : contient >
 Produit "1" <-- "n" LigneVente : ligne >
 Vente "1" --> "n" LigneVente : compose >
 Vente "1" --> "1" Paiement : associé >
 Utilisateur "1" --> "n" Vente : effectue >
+CentreLogistique "1" o-- "*" Produit : stocke >
 
 @enduml

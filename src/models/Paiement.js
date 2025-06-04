@@ -5,7 +5,8 @@ const Vente = require('./Vente');
 const Paiement = sequelize.define('Paiement', {
   moyen: DataTypes.STRING,
   montant: DataTypes.FLOAT,
-  date: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
+  date: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
+  magasinId: { type: DataTypes.INTEGER, allowNull: false }
 });
 
 Paiement.belongsTo(Vente);
