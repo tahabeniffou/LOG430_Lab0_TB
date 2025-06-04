@@ -1,59 +1,76 @@
-LOG430 Lab 0
+# LOG430_Lab2
 
-Une mini‑application Node.js qui affiche « Hello World » et sert d’exemple complet : lint → tests → conteneurisation → CI/CD.
+Ce projet est une application Node.js/Express pour la gestion de points de vente (POS) multi-magasins, avec gestion du stock, des ventes, du réapprovisionnement logistique et des rapports pour la maison mère.
 
-📝 Partie 1 — Description du projet
-Cette application Node.js est volontairement minimaliste : un unique fichier index.js contient la fonction getMessage() qui renvoie la chaîne « Hello World ». Lorsque ce script est exécuté (par node index.js ou via le conteneur Docker), la fonction est appelée et le message est immédiatement affiché dans le terminal.
+---
 
-Autour de ce noyau très simple, le dépôt rassemble tout le nécessaire pour garantir la qualité, la testabilité et la portabilité du code :
+## Utilisation avec Docker Compose
 
-- Le dossier __tests__/ héberge un test Jest qui vérifie que la fonction retourne bien le texte attendu.
 
-- Les règles ESLint imposent un style homogène et détectent les erreurs potentielles dès l’écriture.
+### 1. Lancer l’application
 
-- Un Dockerfile basé sur node:20‑alpine génère une image extrêmement légère, tandis que .dockerignore exclut du build les fichiers inutiles (git, tests, modules locaux…).
+Dans un terminal exécute :
 
-- Le fichier docker-compose.yml orchestre le lancement local : une seule commande suffit pour construire l’image puis exécuter le conteneur.
+```sh
+docker compose up --build
+```
 
-- Enfin, le workflow GitHub Actions (.github/workflows/ci.yml) automatise la chaîne : lint → tests → build Docker → push sur Docker Hub. Chaque push ou pull‑request déclenche ces étapes, assurant qu’aucune régression n’atteint la branche principale.
+Cela va :
+- Construire l’image de l’API Node.js
+- Lancer la base de données (PostgreSQL)
+- Démarrer l’API sur [http://localhost:3000](http://localhost:3000)
 
-📝 Partie 2 — Étapes pour utiliser le projet
+---
 
-1️⃣ Cloner le dépôt
+### 2. Utiliser la console POS(Caisse des magasins)
 
-2️⃣ Prérequis
+Pour accéder à la console interactive POS :
 
-  - Docker Engine + Compose v2
-    
-  - (Facultatif) Node.js 20 si tu veux tout lancer sans conteneur
+```sh
+docker exec -it pos-api bash
+node src/appConsole.js
+```
 
-3️⃣ Construire & lancer via Docker Compose
+---
+### 3. Utiliser la console Maison mere
 
-docker compose up --build          # interactif
+Pour accéder à la console interactive POS :
 
-docker compose up -d --build       # en arrière‑plan
+```sh
+docker exec -it pos-api bash
+node src/maisonMereConsole.js
 
-4️⃣ Lancer en local (hors Docker)
+### 4. Arrêter l’application
 
-npm install   # dépendances
+Dans un autre terminal :
 
-npm run lint  # qualité
+```sh
+docker compose down
+```
 
-npm test      # tests unitaires
+---
 
-npm start     # exécution
+## 📦 Structure du projet
 
-5️⃣ Pipeline CI/CD
+```
+src/
+  api/           # Routes Express et serveur principal
+  controllers/   # Logique métier
+  models/        # Modèles Sequelize
+  appConsole.js  # Console POS
+  maisonMereConsole.js  # Console Maison mere
+tests/           # Tests Jest
+```
 
-Chaque push ou PR déclenche automatiquement :
+---
 
-  - Lint (npm run lint)
-    
-  - Tests (npm test)
-    
-  - Build de l’image Docker
-    
-  - Push sur Docker Hub → docker.io/<user>/hello-node:latest
-    
-![image](https://github.com/user-attachments/assets/5ddcd83d-6ced-4da3-a2db-e9376efcaf90)
+## 🧪 Lancer les tests
 
+Pour lancer les tests unitaires (hors Docker) :
+
+```sh
+npm install
+npm test
+```
+
+---
