@@ -57,15 +57,13 @@ async function mainMenu(utilisateur, magasin) {
         name: 'action',
         message: `=== 💼 Caisse POS — ${magasin.nom} — Connecté : ${utilisateur.nom} (${utilisateur.role}) ===`,
         choices: [
-          new Separator(' '),
           new Separator('─── Menu Principal ───'),
           { name: '🛒 Rechercher un produit', value: 'recherche' },
           { name: '💰 Enregistrer une vente', value: 'vente' },
           { name: '↩️ Annuler une vente', value: 'annuler' },
           { name: '📦 Consulter le stock', value: 'stock' },
           { name: '📦 Réapprovisionnement depuis le centre logistique', value: 'reappro' },
-          { name: '❌ Quitter', value: 'exit' },
-          new Separator(' ')
+          { name: '❌ Quitter', value: 'exit' }
         ]
       }
     ]);
@@ -96,41 +94,41 @@ async function mainMenu(utilisateur, magasin) {
         break;
       }
       case 'reappro': {
-  console.clear();
-  // On récupère le stock du centre logistique
-  const { data: stock } = await axios.get(`${API_URL}/logistique/stock`);
-  console.log('\nStock du centre logistique :');
-  stock.forEach(s => {
-    console.log(`- ${s.nom} : ${s.stock}`);
-  });
+        console.clear();
+        // On récupère le stock du centre logistique
+        const { data: stock } = await axios.get(`${API_URL}/logistique/stock`);
+        console.log('\nStock du centre logistique :');
+        stock.forEach(s => {
+          console.log(`- ${s.nom} : ${s.stock}`);
+        });
 
-  const { produitId, quantite } = await inquirer.prompt([
-    {
-      type: 'list',
-      name: 'produitId',
-      message: 'Quel produit réapprovisionner ?',
-      choices: stock.map(s => ({
-        name: `${s.nom} (Stock: ${s.stock})`,
-        value: s.id
-      }))
-    },
-    {
-      type: 'number',
-      name: 'quantite',
-      message: 'Quantité à demander :',
-      validate: q => q > 0 ? true : 'Quantité invalide'
-    }
-  ]);
-  try {
-    // Appel à la route de réapprovisionnement (qui crée la demande)
-    await axios.post(`${API_URL}/logistique/magasins/${magasin.id}/reappro`, { produitId, quantite });
-    console.log('✅ Demande envoyée.');
-  } catch (e) {
-    console.log('❌ ' + (e.response?.data?.error || e.message));
-  }
-  await pause();
-  break;
-}
+        const { produitId, quantite } = await inquirer.prompt([
+          {
+            type: 'list',
+            name: 'produitId',
+            message: 'Quel produit réapprovisionner ?',
+            choices: stock.map(s => ({
+              name: `${s.nom} (Stock: ${s.stock})`,
+              value: s.id
+            }))
+          },
+          {
+            type: 'number',
+            name: 'quantite',
+            message: 'Quantité à demander :',
+            validate: q => q > 0 ? true : 'Quantité invalide'
+          }
+        ]);
+        try {
+          // Appel à la route de réapprovisionnement (qui crée la demande)
+          await axios.post(`${API_URL}/logistique/magasins/${magasin.id}/reappro`, { produitId, quantite });
+          console.log('✅ Demande envoyée.');
+        } catch (e) {
+          console.log('❌ ' + (e.response?.data?.error || e.message));
+        }
+        await pause();
+        break;
+      }
       case 'annuler': {
         console.clear();
 
@@ -161,7 +159,66 @@ async function mainMenu(utilisateur, magasin) {
         await pause();
         break;
       }
+      case 'vente': {
+        console.clear();
+        // On récupère les produits disponibles
+        const { data: produits } = await axios.get(`${API_URL}/magasins/${magasin.id}/produits`);
+        if (!produits || produits.length === 0) {
+          console.log('❌ Aucun produit disponible pour la vente.');
+          await pause();
+          break;
+        }
 
+        // Sélection des produits à vendre
+        const { produitsSelectionnes } = await inquirer.prompt({
+          type: 'checkbox',
+          name: 'produitsSelectionnes',
+          message: '🛒 Sélectionne les produits à vendre :',
+          choices: produits.map(p => ({
+            name: `${p.nom} ($${p.prix} | Stock: ${p.stock})`,
+            value: p.id,
+            disabled: p.stock === 0 ? 'Rupture de stock' : false
+          }))
+        });
+
+        if (!produitsSelectionnes || produitsSelectionnes.length === 0) {
+          console.log('⚠️ Aucun produit sélectionné.');
+          await pause();
+          break;
+        }
+
+        // Saisie des quantités pour chaque produit sélectionné
+        const quantites = {};
+        for (const produitId of produitsSelectionnes) {
+          const produit = produits.find(p => p.id === produitId);
+          const { quantite } = await inquirer.prompt({
+            type: 'number',
+            name: 'quantite',
+            message: `Quantité pour ${produit.nom} (stock: ${produit.stock}) :`,
+            validate: q =>
+              q > 0 && q <= produit.stock
+                ? true
+                : `Quantité invalide (max: ${produit.stock})`
+          });
+          quantites[produitId] = quantite;
+        }
+
+        // Enregistrement de la vente (correction ici)
+        try {
+          await axios.post(`${API_URL}/magasins/${magasin.id}/ventes`, {
+            utilisateurId: utilisateur.id,
+            produits: Object.entries(quantites).map(([id, qte]) => ({
+              id,
+              qte
+            }))
+          });
+          console.log('✅ Vente enregistrée avec succès.');
+        } catch (e) {
+          console.log('❌ ' + (e.response?.data?.error || e.message));
+        }
+        await pause();
+        break;
+      }
       case 'stock': {
         console.clear();
         const { data: produits } = await axios.get(`${API_URL}/magasins/${magasin.id}/stock`);

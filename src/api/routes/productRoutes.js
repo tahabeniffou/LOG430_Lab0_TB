@@ -1,11 +1,16 @@
 const express = require('express');
 const router = express.Router({ mergeParams: true });
-const { rechercherProduitParNom } = require('../../controllers/productController');
+const Produit = require('../../models/Produit');
 
-// GET /magasins/:magasinId/produits?nom=...
+// GET /magasins/:magasinId/produits
 router.get('/', async (req, res) => {
+  const { nom } = req.query;
+  const where = { magasinId: req.params.magasinId };
+  if (nom !== undefined && nom !== '') {
+    where.nom = nom;
+  }
   try {
-    const produits = await rechercherProduitParNom(req.query.nom, req.params.magasinId);
+    const produits = await Produit.findAll({ where });
     res.json(produits);
   } catch (e) {
     res.status(500).json({ error: e.message });

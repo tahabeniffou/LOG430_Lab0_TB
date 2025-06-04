@@ -3,12 +3,14 @@ const router = express.Router({ mergeParams: true });
 const { enregistrerVente, annulerVente } = require('../../controllers/salesController');
 const Vente = require('../../models/Vente');
 const Paiement = require('../../models/Paiement');
+const LigneVente = require('../../models/LigneVente');
+const Produit = require('../../models/Produit');
 
 // POST /magasins/:magasinId/ventes
 router.post('/', async (req, res) => {
   try {
-    const { items, utilisateurId } = req.body;
-    await enregistrerVente(items, utilisateurId, req.params.magasinId);
+    const { produits, utilisateurId } = req.body; // Correction ici
+    await enregistrerVente(produits, utilisateurId, req.params.magasinId);
     res.json({ message: 'Vente enregistrée' });
   } catch (e) {
     res.status(400).json({ error: e.message });
@@ -31,7 +33,10 @@ router.get('/', async (req, res) => {
     const ventes = await Vente.findAll({
       where: { magasinId: req.params.magasinId },
       order: [['date', 'DESC']],
-      include: [{ model: Paiement }]
+      include: [
+        { model: Paiement },
+        { model: LigneVente, include: [Produit] }
+      ]
     });
     res.json(ventes);
   } catch (e) {

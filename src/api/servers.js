@@ -19,7 +19,6 @@ app.use('/logistique', logistiqueRoutes);
 app.use('/maison-mere', maisonMereRoutes);
 app.use('/magasins/:magasinId/stock', stockRoutes);
 
-// Ajoute ici d'autres routes (ventes, réappro, etc.)
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`API démarrée sur le port ${PORT}`));

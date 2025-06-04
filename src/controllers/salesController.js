@@ -26,27 +26,25 @@ async function enregistrerVente(produits, utilisateurId, magasinId) {
       produit.stock -= item.qte;
       await produit.save({ transaction });
 
-      const sousTotal = produit.prix * item.qte;
-      total += sousTotal;
+      await LigneVente.create({
+      quantite: item.qte,
+      sousTotal: produit.prix * item.qte, // Correction ici
+      ProduitId: produit.id,
+      VenteId: vente.id,
+      magasinId: magasinId
+    }, { transaction });
 
-      await LigneVente.create(
-        { quantite: item.qte, sousTotal, ProduitId: produit.id, VenteId: vente.id, magasinId },
-        { transaction }
-      );
+      total += produit.prix * item.qte;
     }
 
     vente.total = total;
     await vente.save({ transaction });
-    await Paiement.create(
-      { moyen: 'carte', montant: total, date: new Date(), VenteId: vente.id, magasinId },
-      { transaction }
-    );
 
     await transaction.commit();
-    console.log('✔ Vente enregistrée');
+    return vente;
   } catch (e) {
     await transaction.rollback();
-    console.error('Erreur transactionnelle :', e.message);
+    throw e;
   }
 }
 
