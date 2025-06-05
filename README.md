@@ -1,77 +1,46 @@
-# LOG430_Lab2
+## Résumé des Labs précédents
 
-Ce projet est une application Node.js/Express pour la gestion de points de vente (POS) multi-magasins, avec gestion du stock, des ventes, du réapprovisionnement logistique et des rapports pour la maison mère.
+### 🧪 Lab 0 – Mise en place d’un projet Node.js avec CI/CD et Docker
 
----
+Le Lab 0 avait pour objectif d’établir les fondations d’un projet Node.js moderne. Nous avons développé une petite application avec une fonction simple `getMessage()` retournant `"Hello World"`. 
 
-## Utilisation avec Docker Compose
+Ce lab comprenait les éléments suivants :
 
+- Mise en place d’un projet Node.js avec `npm init`
+- Ajout d’un test unitaire avec **Jest**
+- Configuration d’**ESLint** pour assurer la qualité du code
+- Création d’un **Dockerfile** pour conteneuriser l’application
+- Déploiement d’un pipeline **CI/CD** via **GitHub Actions** avec étapes de lint, test et build Docker
 
-### 1. Lancer l’application
-
-Dans un terminal exécute :
-
-```sh
-docker compose up --build
-```
-
-Cela va :
-- Construire l’image de l’API Node.js
-- Lancer la base de données (PostgreSQL)
-- Démarrer l’API sur [http://localhost:3000](http://localhost:3000)
+Ce laboratoire visait à familiariser l'étudiant avec les bonnes pratiques de développement logiciel, la conteneurisation et l’automatisation des tâches de validation.
 
 ---
 
-### 2. Utiliser la console POS(Caisse des magasins)
+### 🧪 Lab 1 – Architecture à deux services avec Docker Compose et PostgreSQL
 
-Pour accéder à la console interactive POS :
+Dans le Lab 1, nous avons étendu le projet du Lab 0 en transformant l’application en une **application console complète**, structurée en architecture **client/serveur à deux couches (2-tier)**.
 
-```sh
-docker exec -it pos-api bash
-node src/appConsole.js
-```
+Ce lab introduisait les éléments suivants :
 
----
-### 3. Utiliser la console Maison mere
+- Ajout d’une **base de données PostgreSQL** pour la persistance des données
+- Intégration de **Sequelize** comme ORM pour gérer les entités (`Produit`, `Vente`, `LigneVente`, `Utilisateur`, etc.)
+- Développement d’une interface console interactive avec **Inquirer.js**
+- Utilisation de **Docker Compose** pour orchestrer les services `pos-app` (Node.js) et `pos-db` (PostgreSQL)
+- Configuration de **volumes Docker** pour assurer la persistance des données
+- Tests unitaires maintenus avec Jest pour valider la logique métier
 
-Pour accéder à la console interactive POS :
-
-```sh
-docker exec -it pos-api bash
-node src/maisonMereConsole.js
-```
-
-### 4. Arrêter l’application
-
-Dans un autre terminal :
-
-```sh
-docker compose down
-```
+Ce laboratoire permettait de comprendre comment développer une application structurée, interagir avec une base de données relationnelle, et déployer une solution multi-conteneurs avec Docker.
 
 ---
 
-## 📦 Structure du projet
+### ⚖️ Comparaison des Lab 0 et Lab 1
 
-```
-src/
-  api/           # Routes Express et serveur principal
-  controllers/   # Logique métier
-  models/        # Modèles Sequelize
-  appConsole.js  # Console POS
-  maisonMereConsole.js  # Console Maison mere
-tests/           # Tests Jest
-```
+| Éléments               | Lab 0                                      | Lab 1                                                         |
+|------------------------|--------------------------------------------|---------------------------------------------------------------|
+| Fonctionnalité         | Fonction simple `getMessage()`             | Application console POS avec gestion des ventes et produits   |
+| Base de données        | Aucune                                     | PostgreSQL + Sequelize ORM                                    |
+| Conteneurisation       | Dockerfile unique                          | Docker Compose avec 2 services (Node.js + PostgreSQL)         |
+| Objectif pédagogique   | Démarrage CI/CD + Docker + tests unitaires | Architecture 2-tier + persistance + orchestration Docker      |
 
 ---
 
-## 🧪 Lancer les tests
-
-Pour lancer les tests unitaires (hors Docker) :
-
-```sh
-npm install
-npm test
-```
-
----
