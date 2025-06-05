@@ -144,7 +144,7 @@ Dans le cadre du Lab 2, j’ai commencé à structurer mon système en m’inspi
 
 ### Identification des sous-domaines fonctionnels
 
-1. **🛒 Ventes en magasin (Sous-domaine principal)**  
+1. **Ventes en magasin (Sous-domaine principal)**  
    Ce sous-domaine couvre toutes les opérations réalisées par un magasin physique :  
    - Recherche de produits  
    - Création de ventes avec plusieurs articles  
