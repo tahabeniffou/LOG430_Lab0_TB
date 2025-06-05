@@ -136,3 +136,47 @@ Pour le Lab 2, les exigences ont évolué afin de simuler un environnement multi
 
 ---
 
+## 📌 Réflexion basée sur le Domain-Driven Design (DDD)
+
+Dans le cadre du Lab 2, j’ai commencé à structurer mon système en m’inspirant des principes du **Domain-Driven Design (DDD)**. Cela m’a permis d’identifier des **sous-domaines fonctionnels clairs** à partir des rôles et responsabilités métier observés dans le système.
+
+---
+
+### Identification des sous-domaines fonctionnels
+
+1. **🛒 Ventes en magasin (Sous-domaine principal)**  
+   Ce sous-domaine couvre toutes les opérations réalisées par un magasin physique :  
+   - Recherche de produits  
+   - Création de ventes avec plusieurs articles  
+   - Gestion des paiements et des utilisateurs  
+   - Mise à jour du stock local  
+   
+   C’est un **sous-domaine central** orienté transactionnel, fortement couplé aux opérations en temps réel.
+
+2. **Gestion logistique (Sous-domaine de support)**  
+   Ce domaine gère les interactions entre les magasins et un centre de distribution :  
+   - Création de demandes de réapprovisionnement  
+   - Suivi des quantités disponibles au centre logistique  
+   - Coordination de l’approvisionnement  
+  
+   Ce domaine est **support** car il fournit des services nécessaires aux opérations du domaine principal (les ventes en magasin), mais peut évoluer indépendamment.
+
+3. **Supervision par la maison mère (Sous-domaine de coordination)**  
+   La maison mère supervise l’ensemble du réseau de magasins :  
+   - Agrégation des ventes par magasin  
+   - Génération de rapports consolidés  
+   - Visualisation du stock global  
+   - Accès aux indicateurs de performance  
+  
+   C’est un **sous-domaine de coordination**, chargé de l’analyse et du pilotage global, avec une logique orientée lecture et consolidation.
+
+---
+
+### Avantages de cette modélisation
+
+- Elle m’a permis de mieux **séparer les responsabilités** dans mon code, en créant des routes, contrôleurs et modèles dédiés par sous-domaine.
+- Elle facilite aussi l’évolutivité du projet : chaque sous-domaine peut évoluer indépendamment, tant que les contrats d’API sont respectés.
+- Enfin, elle prépare le terrain pour une **architecture orientée microservices** si le projet devait grandir davantage.
+
+---
+
