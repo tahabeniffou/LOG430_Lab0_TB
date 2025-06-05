@@ -2,9 +2,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main ,LOG430_Lab1]
   pull_request:
-    branches: [ main ]
+    branches: [ main ,LOG430_Lab1]
 
 jobs:
   lint:
@@ -22,7 +22,7 @@ jobs:
         run: npm ci
 
       - name: Run ESLint
-        run: npx eslint ./*.js
+        run: npx eslint
 
   test:
     runs-on: ubuntu-latest

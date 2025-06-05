@@ -1,0 +1,46 @@
+@startuml VueLogiquePOS_Étendue
+
+class Produit {
+  +id: Integer
+  +nom: String
+  +prix: Float
+  +stock: Integer
+}
+
+class Categorie {
+  +id: Integer
+  +nom: String
+}
+
+class Vente {
+  +id: Integer
+  +date: DateTime
+  +total: Float
+}
+
+class LigneVente {
+  +id: Integer
+  +quantite: Integer
+  +sousTotal: Float
+}
+
+class Utilisateur {
+  +id: Integer
+  +nom: String
+  +role: String
+}
+
+class Paiement {
+  +id: Integer
+  +moyen: String
+  +montant: Float
+  +date: DateTime
+}
+
+Categorie "1" --> "n" Produit : contient >
+Produit "1" <-- "n" LigneVente : ligne >
+Vente "1" --> "n" LigneVente : compose >
+Vente "1" --> "1" Paiement : associé >
+Utilisateur "1" --> "n" Vente : effectue >
+
+@enduml

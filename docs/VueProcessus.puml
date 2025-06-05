@@ -1,0 +1,34 @@
+@startuml VueProcessusVente
+
+actor Utilisateur as U
+participant "Application Console" as App
+participant "ORM Sequelize" as ORM
+database "Base SQLite" as DB
+
+U -> App : entre les IDs des produits à vendre
+App -> ORM : rechercher les produits par ID
+ORM -> DB : SELECT * FROM produits WHERE id IN (...)
+DB --> ORM : résultats (produits)
+
+App -> ORM : démarrer une transaction
+App -> ORM : créer la vente (total = 0)
+ORM -> DB : INSERT INTO ventes (...)
+DB --> ORM : confirmation
+
+loop pour chaque produit
+    App -> ORM : vérifier stock & mettre à jour
+    ORM -> DB : UPDATE produits SET stock = stock - qté
+    DB --> ORM : OK
+end
+
+App -> ORM : mettre à jour total de la vente
+ORM -> DB : UPDATE ventes SET total = ...
+DB --> ORM : OK
+
+App -> ORM : valider la transaction (commit)
+ORM -> DB : COMMIT
+DB --> ORM : confirmé
+
+App --> U : vente enregistrée avec succès
+
+@enduml

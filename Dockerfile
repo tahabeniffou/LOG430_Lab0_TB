@@ -1,9 +1,7 @@
-# syntax=docker/dockerfile:1
-FROM node:20-alpine                 
+FROM node:20-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+CMD [ "node", "src/appConsole.js" ]
 
-WORKDIR /app                       
-COPY package*.json ./             
-RUN npm ci --omit=dev              
-
-COPY . .                             
-CMD ["node", "index.js"]          
