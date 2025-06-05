@@ -93,4 +93,45 @@ Pour le Lab 2, j’ai fait évoluer le projet développé lors du Lab 1 en ajout
 
 ---
 
+## 📌 Nouvelles exigences et défis architecturaux (Lab 2)
+
+Pour ce deuxième laboratoire, les exigences ont évolué de manière significative par rapport au Lab 1. Le projet ne se limite plus à une simple application console, mais doit désormais gérer plusieurs acteurs (magasins, maison mère, logistique) et supporter des interactions plus complexes entre ces entités. Cela a soulevé plusieurs défis architecturaux que j’ai dû résoudre.
+
+---
+
+### ✅ Nouvelles exigences
+
+1. **Multiples points d’entrée**  
+   L’application doit permettre d’interagir à la fois via une interface console (magasin, maison mère) et via une API REST accessible en réseau.
+
+2. **Gestion multi-entités (distribution)**  
+   Il fallait modéliser plusieurs types d’acteurs dans l’architecture : magasins, centre logistique et maison mère, chacun ayant des responsabilités différentes.
+
+3. **Communication et coordination entre entités**  
+   Les différentes entités doivent pouvoir communiquer : un magasin peut faire une demande de réapprovisionnement, et la maison mère doit pouvoir consulter les stocks et valider ces demandes.
+
+4. **Extensibilité**  
+   Le système devait être prêt à évoluer pour supporter d’autres fonctionnalités comme la gestion d’inventaire global, les retours ou la gestion centralisée des produits.
+
+---
+
+### ⚙️ Défis architecturaux rencontrés
+
+1. **Séparation claire des responsabilités**  
+   J’ai dû structurer mon code pour isoler les rôles métier (magasin, logistique, maison mère) tout en réutilisant les composants communs (produits, utilisateurs, ventes). Cela m’a amené à mieux adopter le modèle MVC et à découpler les contrôleurs, les services et les routes.
+
+2. **Modularisation du serveur**  
+   La mise en place d’un serveur Express avec des routes séparées pour chaque domaine métier (logistique, magasin, etc.) m’a forcé à penser à la cohérence de l’API et à l’organisation des modules.
+
+3. **Conception des modèles relationnels**  
+   L’introduction de nouvelles entités comme `Magasin`, `CentreLogistique` et `DemandeReappro` a demandé une réflexion sur la manière d’établir des relations efficaces entre ces tables, tout en gardant la base de données évolutive.
+
+4. **Orchestration multi-console et API**  
+   J’ai dû gérer la coexistence de plusieurs interfaces : une console pour les employés des magasins, une console pour la maison mère, et une API REST pour les appels réseau. Il fallait que ces couches fonctionnent ensemble sans duplication de logique métier.
+
+5. **Maintenabilité et évolutivité**  
+   Le projet devenant plus complexe, j’ai pris soin de refactorer le code pour qu’il reste lisible, modulaire et prêt à accueillir de nouvelles fonctionnalités sans tout casser.
+
+---
+
 
