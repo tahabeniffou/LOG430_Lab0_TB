@@ -1,6 +1,6 @@
 ## Résumé des Labs précédents
 
-### 🧪 Lab 0 – Mise en place d’un projet Node.js avec CI/CD et Docker
+### Lab 0 – Mise en place d’un projet Node.js avec CI/CD et Docker
 
 Le Lab 0 avait pour objectif d’établir les fondations d’un projet Node.js moderne. Nous avons développé une petite application avec une fonction simple `getMessage()` retournant `"Hello World"`. 
 
@@ -16,7 +16,7 @@ Ce laboratoire visait à familiariser l'étudiant avec les bonnes pratiques de d
 
 ---
 
-### 🧪 Lab 1 – Architecture à deux services avec Docker Compose et PostgreSQL
+### Lab 1 – Architecture à deux services avec Docker Compose et PostgreSQL
 
 Dans le Lab 1, nous avons étendu le projet du Lab 0 en transformant l’application en une **application console complète**, structurée en architecture **client/serveur à deux couches (2-tier)**.
 
@@ -28,8 +28,6 @@ Ce lab introduisait les éléments suivants :
 - Utilisation de **Docker Compose** pour orchestrer les services `pos-app` (Node.js) et `pos-db` (PostgreSQL)
 - Configuration de **volumes Docker** pour assurer la persistance des données
 - Tests unitaires maintenus avec Jest pour valider la logique métier
-
-Ce laboratoire permettait de comprendre comment développer une application structurée, interagir avec une base de données relationnelle, et déployer une solution multi-conteneurs avec Docker.
 
 ---
 
@@ -44,13 +42,13 @@ Ce laboratoire permettait de comprendre comment développer une application stru
 
 ---
 
-## 🔄 Évolution du projet : de Lab 1 à Lab 2
+## Évolution du projet : de Lab 1 à Lab 2
 
 Pour le Lab 2, j’ai fait évoluer le projet développé lors du Lab 1 en ajoutant de nouvelles fonctionnalités, tout en conservant une bonne partie de la structure existante. Voici un résumé des éléments que j’ai gardés, modifiés ou complètement refactorés.
 
 ---
 
-### ✅ Éléments que j’ai conservés du Lab 1
+### Éléments que j’ai conservés du Lab 1
 
 - J’ai conservé la structure de base du projet avec les dossiers `src/`, `tests/` et `docs/`, ainsi que les fichiers essentiels comme `Dockerfile`, `docker-compose.yml`, `.gitignore`, `package.json`, etc.
 - Les modèles Sequelize tels que `Produit`, `Vente`, `LigneVente`, `Paiement`, `Utilisateur` et `Categorie` sont toujours présents.
@@ -59,7 +57,7 @@ Pour le Lab 2, j’ai fait évoluer le projet développé lors du Lab 1 en ajout
 
 ---
 
-### ✏️ Éléments que j’ai modifiés ou ajoutés dans le Lab 2
+### Éléments que j’ai modifiés ou ajoutés dans le Lab 2
 
 - J’ai ajouté une nouvelle console dédiée à la maison mère (`maisonMereConsole.js`) pour simuler une gestion centralisée.
 - J’ai développé une API REST complète en utilisant **Express.js** dans `src/api/servers.js`. Cette API expose plusieurs routes pour accéder aux ressources via HTTP.
@@ -70,7 +68,7 @@ Pour le Lab 2, j’ai fait évoluer le projet développé lors du Lab 1 en ajout
 
 ---
 
-### 🔧 Éléments que j’ai refactorés
+### Éléments que j’ai refactorés
 
 - J’ai séparé la logique console de la logique serveur en créant un répertoire `api/` contenant le serveur Express, les routes et les contrôleurs. Cela améliore la lisibilité du code et facilite l’évolutivité.
 - J’ai structuré le code selon une approche plus modulaire et alignée sur le modèle MVC.
@@ -79,7 +77,7 @@ Pour le Lab 2, j’ai fait évoluer le projet développé lors du Lab 1 en ajout
 
 ---
 
-### 📌 Résumé comparatif
+### Résumé comparatif
 
 | Aspect                        | Lab 1                                   | Lab 2                                                 |
 |------------------------------|-----------------------------------------|--------------------------------------------------------|
@@ -98,7 +96,7 @@ Pour le Lab 2, les exigences ont évolué afin de simuler un environnement multi
 
 ---
 
-### ✅ Nouvelles exigences
+### Nouvelles exigences
 
 1. **Supervision centralisée (Maison mère)**  
    La maison mère doit pouvoir :
@@ -119,7 +117,7 @@ Pour le Lab 2, les exigences ont évolué afin de simuler un environnement multi
 
 ---
 
-### ⚙️ Défis architecturaux rencontrés
+### Défis architecturaux rencontrés
 
 1. **Création de rapports dynamiques**  
    J’ai dû construire un endpoint `/maison-mere/rapport` qui agrège les ventes de tous les magasins, calcule le chiffre d’affaires, trie les produits les plus vendus, et affiche les stocks par produit.
