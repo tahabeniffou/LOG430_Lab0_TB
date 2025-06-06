@@ -1,122 +1,107 @@
-# Choix technologiques — Système de caisse POS (2-tier)
+# Choix technologiques — Système POS Distribué
 
-Ce document présente les choix technologiques faits dans le cadre du développement de l’application console POS, avec une justification claire basée sur les contraintes pédagogiques et techniques du projet : **simplicité**, **portabilité**, **fiabilité**, et **coût faible**.
+Ce document présente les choix technologiques faits dans le cadre du développement du système de caisse POS distribué (Lab 2), incluant l’interface console, l’API REST et les services backend. Ces choix sont guidés par les principes de **simplicité**, **modularité**, **portabilité** et **gratuité**.
 
 ---
 
 ## Plateforme de développement
 
 **Node.js**
-Choisi comme environnement principal d'exécution.
 
 **Justification** :
-
-* Déjà utilisé dans le Lab 0 → continuité naturelle.
-* Léger, rapide à démarrer.
-* Large écosystème de bibliothèques.
-* Gratuit, open-source et multiplateforme.
+- Déjà utilisé dans le Lab 1 → continuité naturelle.
+- Léger, rapide à démarrer.
+- Grand écosystème JavaScript (Express, Inquirer, Sequelize, etc.).
+- Multiplateforme et open-source.
 
 ---
 
-## Gestion de dépendances & packaging
+## Gestion de dépendances
 
 **npm** (Node Package Manager)
-Utilisé pour installer les bibliothèques (ORM, linter, outils de test).
 
 **Justification** :
-
-* Intégré à Node.js.
-* Très répandu et documenté.
+- Outil standard intégré à Node.js.
+- Compatible avec tous les modules utilisés dans le projet.
 
 ---
 
-## Persistance des données
+## 🗃Base de données
 
-**SQLite (base relationnelle locale)**
-Base de données légère, enregistrée dans un fichier `.sqlite`.
+**PostgreSQL**
 
 **Justification** :
-
-* Aucun serveur à configurer (local uniquement).
-* Idéal pour une application simple et autonome.
-* Supporte les transactions (fiabilité des ventes).
-* Compatible avec les ORM modernes comme Sequelize.
+- Robuste et open-source.
+- Gère les relations complexes (produits, ventes, magasins, etc.).
+- Supporté nativement par Sequelize.
+- Conteneurisé via Docker pour portabilité.
 
 ---
 
-## ORM utilisé
+## ORM
 
 **Sequelize**
-Object-Relational Mapping (ORM) pour Node.js.
 
 **Justification** :
-
-* Abstraction des requêtes SQL.
-* Support natif de SQLite.
-* Facile à apprendre et à utiliser.
-* Permet de garder le code métier indépendant de la base utilisée.
+- Mapping objet-relationnel compatible avec PostgreSQL.
+- Simplifie l'accès à la base de données.
+- Migrations, seeds, et synchronisation faciles.
+- Bonne documentation et forte communauté.
 
 ---
 
 ## Tests
 
 **Jest**
-Framework de tests unitaires.
 
 **Justification** :
-
-* Déjà utilisé dans le labo précédent.
-* Syntaxe simple.
-* Très bon support pour les tests Node.js.
+- Framework simple et bien intégré à Node.js.
+- Utilisé dans le Lab 1 → continuité.
+- Intégration facile avec GitHub Actions pour CI.
 
 ---
 
 ## Qualité du code
 
 **ESLint**
-Analyse statique du code JavaScript.
 
 **Justification** :
-
-* Garantit un style de code uniforme.
-* Détecte les erreurs potentielles avant exécution.
-* Facile à intégrer dans une pipeline CI.
+- Imposition d’un style de code cohérent.
+- Détection d’erreurs potentielles avant exécution.
+- Intégrable à l’éditeur et à la CI.
 
 ---
 
 ## Conteneurisation
 
 **Docker** + **Docker Compose**
-Utilisés pour packager et exécuter l’application localement dans un environnement contrôlé.
 
 **Justification** :
-
-* Facilite la reproductibilité du projet.
-* Exécution identique peu importe la machine.
-* Intégration simple avec CI/CD.
+- Exécution reproductible sur toutes les machines.
+- Simplifie le lancement des différents services (API, base de données, consoles).
+- Permet le test et déploiement local ou distant sans surprise.
 
 ---
 
 ## Intégration Continue
 
 **GitHub Actions**
-Utilisé pour automatiser les étapes clés à chaque push : lint, test, build, push Docker.
 
 **Justification** :
-
-* Gratuit pour les dépôts publics.
-* Facile à configurer (fichier YAML).
-* Compatible avec npm, Docker, ESLint, Jest…
+- Automatisation des tests, linting, et build Docker à chaque commit.
+- Facile à configurer.
+- Gratuit pour les dépôts publics.
 
 ---
 
 ## Résumé
 
-Les technologies sélectionnées offrent :
+Les technologies utilisées dans ce projet répondent aux objectifs suivants :
 
-* **Simplicité** : peu d'installation, configuration minimale.
-* **Fiabilité** : gestion des transactions et tests automatisés.
-* **Portabilité** : fonctionnement local avec Docker et SQLite.
-* **Coût nul** : tous les outils sont open source et gratuits.
+- **Simplicité** : outils connus, déjà utilisés en Lab 1.
+- **Modularité** : chaque composant (console, API, DB) est isolé.
+- **Portabilité** : tout fonctionne dans Docker.
+- **Fiabilité** : grâce à PostgreSQL, aux tests Jest et au linting ESLint.
+- **Gratuité** : tous les outils sont open source.
 
-Ces choix sont parfaitement adaptés au contexte d’un laboratoire universitaire avec des objectifs pédagogiques clairs.
+Ces choix sont adaptés à un projet académique réaliste et évolutif, tout en restant facile à prendre en main.
