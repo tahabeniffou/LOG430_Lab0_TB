@@ -1,67 +1,95 @@
-@startuml VueLogiquePOS_Étendue
-
-class MaisonMere {
-  +id: Integer
-  +nom: String
-}
-
-class Magasin {
-  +id: Integer
-  +nom: String
-  +adresse: String
-}
-
-class CentreLogistique {
-  +id: Integer
-  +nom: String
-}
+@startuml
 
 class Produit {
-  +id: Integer
-  +nom: String
-  +prix: Float
-  +stock: Integer
+  +id
+  +nom
+  +prix
+  +stock
+  +magasinId : int
 }
 
 class Categorie {
-  +id: Integer
-  +nom: String
+  +id
+  +nom
+  +magasinId : int
+}
+
+class Magasin {
+  +id
+  +nom
+  +adresse
 }
 
 class Vente {
-  +id: Integer
-  +date: DateTime
-  +total: Float
+  +id
+  +total
+  +date
+  +magasinId : int
 }
 
 class LigneVente {
-  +id: Integer
-  +quantite: Integer
-  +sousTotal: Float
-}
-
-class Utilisateur {
-  +id: Integer
-  +nom: String
-  +role: String
+  +id
+  +quantite
+  +sousTotal
+  +magasinId : int
 }
 
 class Paiement {
-  +id: Integer
-  +moyen: String
-  +montant: Float
-  +date: DateTime
+  +id
+  +moyen
+  +montant
+  +date
+  +magasinId : int
 }
 
-MaisonMere "1" o-- "*" Magasin : supervise >
-Magasin "1" o-- "*" Produit : possède >
-Magasin "1" o-- "*" Utilisateur : emploie >
-Magasin "1" o-- "*" Vente : réalise >
-Categorie "1" o-- "*" Produit : contient >
-Produit "1" <-- "n" LigneVente : ligne >
-Vente "1" --> "n" LigneVente : compose >
-Vente "1" --> "1" Paiement : associé >
-Utilisateur "1" --> "n" Vente : effectue >
-CentreLogistique "1" o-- "*" Produit : stocke >
+class Utilisateur {
+  +id
+  +nom
+  +role
+  +magasinId : int
+}
+
+class DemandeReappro {
+  +id
+  +produitId : int
+  +quantite
+  +date
+}
+
+class CentreLogistique {
+  +id
+  +nom
+  +stock
+  +ProduitId : int
+}
+
+' Relations
+
+Produit --> Categorie : appartient à
+Categorie --> Produit : contient plusieurs
+
+Produit --> Magasin : stocké dans
+Produit --> LigneVente : utilisé dans
+Produit --> CentreLogistique : 1-1 avec
+
+LigneVente --> Vente : liée à
+Vente --> LigneVente : composée de
+
+Vente --> Paiement : a 1
+Paiement --> Vente : appartient à
+
+Vente --> Utilisateur : faite par
+Utilisateur --> Vente : enregistre plusieurs
+
+DemandeReappro --> Produit : demande pour
+Produit --> DemandeReappro : a plusieurs
+
+CentreLogistique --> Produit : stock logistique de
+
+Utilisateur --> Magasin : travaille dans
+Categorie --> Magasin : associée à
+Vente --> Magasin : effectuée dans
+Paiement --> Magasin : effectué dans
+LigneVente --> Magasin : point de vente
 
 @enduml
