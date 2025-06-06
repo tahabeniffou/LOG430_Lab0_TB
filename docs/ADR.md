@@ -1,4 +1,4 @@
-# 📘 Registre de décisions d'architecture (ADR)
+# Registre de décisions d'architecture (ADR)
 
 ---
 
@@ -75,5 +75,3 @@ Acceptée
 - Simplifie l’intégration continue et les tests
 
 ---
-
-> Ce registre pourra évoluer avec les prochaines versions du système.
