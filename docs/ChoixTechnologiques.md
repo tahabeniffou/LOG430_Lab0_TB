@@ -26,7 +26,7 @@ Ce document présente les choix technologiques faits dans le cadre du développe
 
 ---
 
-## 🗃Base de données
+## Base de données
 
 **PostgreSQL**
 
