@@ -1,18 +1,25 @@
-@startuml VueDeploiement2Tier
+@startuml VueDeploiementLab2
 
-node "Machine locale (VM)" {
-  
-  node "Application Console (Node.js)" {
-    component "Interface CLI"
-    component "Logique métier"
-    component "ORM Sequelize"
+node "Machine Hôte (Docker Host)" {
+  node "Conteneur pos-app" {
+    component "Console POS (appConsole.js)"
   }
 
-  database "Base de données SQLite" {
-    [database.sqlite]
+  node "Conteneur maison-mere" {
+    component "Console Maison Mère (maisonMereConsole.js)"
   }
 
-  "ORM Sequelize" --> "database.sqlite" : Connexion locale (fichier)
+  node "Conteneur api" {
+    component "Serveur API Express (servers.js)"
+  }
+
+  database "Conteneur db" {
+    component "PostgreSQL"
+  }
+
+  "Console POS (appConsole.js)" --> "Serveur API Express (servers.js)" : HTTP (ventes, produits, stock, reappro)
+  "Console Maison Mère (maisonMereConsole.js)" --> "Serveur API Express (servers.js)" : HTTP (dashboard, rapport, logistique)
+  "Serveur API Express (servers.js)" --> "PostgreSQL" : Sequelize ORM
 }
 
 @enduml
