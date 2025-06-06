@@ -1,4 +1,4 @@
-# 📄 Spécification des besoins – LOG430 Lab 2
+# 📄 Spécification des besoins
 
 Ce document présente les besoins fonctionnels et non-fonctionnels du système de point de vente distribué développé dans le cadre du laboratoire 2 du cours LOG430.
 
