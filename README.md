@@ -1,4 +1,4 @@
-# 🧾 LOG430 - POS Distribué (Lab 2)
+# 🧾 LOG430 - POS Distribué
 
 Ce projet simule une solution distribuée de point de vente (POS) avec plusieurs rôles :
 - Magasins qui gèrent les ventes via une console
