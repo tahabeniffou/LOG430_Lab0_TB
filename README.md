@@ -8,6 +8,9 @@ Ce projet simule une solution distribuée de point de vente (POS) avec plusieurs
 
 Développé dans le cadre du cours **LOG430 – Architecture logicielle distribuée** à l'ÉTS.
 
+
+> 🧠 Certaines décisions architecturales, la rédaction documentaire et l’implémentation technique ont été assistées par **ChatGPT** pour accélérer le développement et améliorer la qualité du code.
+
 ---
 
 ##Objectifs
