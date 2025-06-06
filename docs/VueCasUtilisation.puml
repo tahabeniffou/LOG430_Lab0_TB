@@ -1,21 +1,29 @@
-@startuml VueCasUtilisationPOS_Vertical
+@startuml
+actor "Caissier (Magasin)" as Caissier
+actor "Superviseur (Maison Mère)" as Superviseur
 
-actor "Employé" as Emp
-
-rectangle "Système de caisse (POS)" {
-
-  usecase UC1 as "1. Rechercher un produit"
-  usecase UC2 as "2. Effectuer une vente"
-  usecase UC5 as "3. Afficher total d’une vente"
-  usecase UC3 as "4. Annuler une vente (retour)"
-  usecase UC4 as "5. Consulter le stock"
-
+rectangle "Système POS Distribué (via API)" {
+  usecase "Rechercher un produit"
+  usecase "Créer une vente"
+  usecase "Payer une vente"
+  usecase "Annuler une vente"
+  usecase "Faire une demande de réapprovisionnement"
+  usecase "Voir stock du magasin"
+  usecase "Voir stock logistique"
+  usecase "Générer rapport des ventes"
+  usecase "Voir produits populaires"
+  usecase "Voir tableau de bord global"
 }
 
-Emp --> UC1
-Emp --> UC2
-Emp --> UC5
-Emp --> UC3
-Emp --> UC4
+Caissier --> "Rechercher un produit"
+Caissier --> "Créer une vente"
+Caissier --> "Payer une vente"
+Caissier --> "Annuler une vente"
+Caissier --> "Faire une demande de réapprovisionnement"
+Caissier --> "Voir stock du magasin"
 
+Superviseur --> "Générer rapport des ventes"
+Superviseur --> "Voir produits populaires"
+Superviseur --> "Voir tableau de bord global"
+Superviseur --> "Voir stock logistique"
 @enduml
