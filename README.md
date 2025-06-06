@@ -1,4 +1,4 @@
-# 🧾 LOG430 - POS Distribué
+#LOG430 - POS Distribué
 
 Ce projet simule une solution distribuée de point de vente (POS) avec plusieurs rôles :
 - Magasins qui gèrent les ventes via une console
@@ -10,7 +10,7 @@ Développé dans le cadre du cours **LOG430 – Architecture logicielle distribu
 
 ---
 
-## 🚀 Objectifs
+##Objectifs
 
 - Gérer des ventes en magasin avec une interface console
 - Consolider les ventes par la maison mère
@@ -19,7 +19,7 @@ Développé dans le cadre du cours **LOG430 – Architecture logicielle distribu
 
 ---
 
-## 🧰 Technologies utilisées
+## Technologies utilisées
 
 - Node.js + Express
 - Sequelize (PostgreSQL)
@@ -30,14 +30,14 @@ Développé dans le cadre du cours **LOG430 – Architecture logicielle distribu
 
 ---
 
-## 🛠️ Prérequis
+## Prérequis
 
 - [Docker](https://www.docker.com/)
 - [Docker Compose](https://docs.docker.com/compose/)
 
 ---
 
-## ⚙️ Lancement du projet
+## Lancement du projet
 
 ### 1. Lancer les services de base (API + BD)
 
@@ -62,7 +62,7 @@ docker compose run -it maison-mere
 
 ---
 
-## 🧪 Tests
+## Tests
 
 Lancer les tests unitaires (depuis `pos-app`) :
 
@@ -72,7 +72,7 @@ docker compose run pos-app npm test
 
 ---
 
-## 🧭 Fonctionnalités
+## Fonctionnalités
 
 ### POS (magasin)
 
@@ -96,6 +96,6 @@ docker compose run pos-app npm test
 
 ---
 
-## 🧑‍💻 Auteur
+## Auteur
 
-Projet réalisé par **[Ton Nom]** – LOG430, École de technologie supérieure (ÉTS).
+Projet réalisé par **Taha Beniffou** – LOG430, École de technologie supérieure (ÉTS).
