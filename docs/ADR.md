@@ -1,77 +1,94 @@
-# Registre de décisions d'architecture (ADR)
+# Architectural Decision Records (ADR)
 
----
+## ADR 001 – Conteneurisation avec Docker
 
-## ADR 001 — Choix de la plateforme
+### Contexte
+Le système comporte plusieurs composants (API, base de données, consoles POS et Maison Mère) qui doivent fonctionner ensemble de manière cohérente, sur des environnements différents (dev, VM de production, etc.). Il fallait une solution simple et portable pour orchestrer et isoler ces services.
 
-**Contexte**  
-Le projet vise à concevoir une application distribuée simulant un système de point de vente avec plusieurs rôles (magasin, maison mère, logistique). Le langage JavaScript avec Node.js a déjà été utilisé dans le laboratoire précédent (Lab 1), avec des outils configurés tels que Jest, ESLint et Docker.
+### Décision
+Utiliser Docker et Docker Compose pour conteneuriser chaque service (API, BD, POS, Maison Mère) et gérer leur exécution unifiée.
 
-**Décision**  
-Continuer avec **Node.js** pour le backend, les interfaces consoles, et l’API REST.
-
-**Statut**  
+### Statut
 Acceptée
 
-**Conséquences**
-- Réutilisation directe des outils et dépendances précédents.
-- Familiarité accrue = productivité plus rapide.
-- Intégration simple avec des outils modernes comme Express, Sequelize, Jest et Docker.
+### Conséquences
+- Exécution reproductible sur toutes les machines
+- Déploiement simple sur la VM de production
+- Environnement isolé pour chaque composant
+- Ce choix a été facilité par ma familiarité avec Docker, déjà utilisé dans mes cours précédents
 
 ---
 
-## ADR 002 — Choix de l’architecture logicielle
+## ADR 002 – Centralisation via une API REST Express
 
-**Contexte**  
-L'application doit prendre en charge plusieurs rôles (POS, maison mère, logistique) avec des comportements différents. Il faut une séparation claire des responsabilités et une base modulaire.
+### Contexte
+Dans le Lab 1, la logique métier était couplée à la console. Cela limitait la supervision globale. Il fallait centraliser les traitements métier et faciliter la communication entre les consoles et la base de données.
 
-**Décision**  
-Adopter une **architecture 2-tier modulaire**, combinant :
-- Interfaces console (clients)
-- Serveur API REST (Express) pour la logique métier et les accès BD
+### Décision
+Développer une API REST avec Express.js pour centraliser les opérations (produits, ventes, réapprovisionnements, rapports).
 
-**Statut**  
+### Statut
 Acceptée
 
-**Conséquences**
-- Facilité d’évolution par rôle (console vs API)
-- Chaque composant peut être testé et exécuté indépendamment
-- Prépare le terrain pour un découplage futur en microservices
+### Conséquences
+- Clarifie l’architecture (séparation des responsabilités)
+- Permet l’évolution des consoles indépendamment de la logique métier
+- Favorise la supervision centralisée
+- Choix basé sur mon expérience avec Express.js, utilisé dans d'autres projets universitaires
 
 ---
 
-## ADR 003 — Choix de la base de données
+## ADR 003 – Base de données PostgreSQL
 
-**Contexte**  
-Le système doit permettre la consultation, l'enregistrement et l'agrégation de données (produits, ventes, utilisateurs, demandes de réapprovisionnement) dans un environnement multi-utilisateurs.
+### Contexte
+SQLite utilisé dans le Lab 1 ne permettait pas une exécution distribuée fiable ni de gestion multi-utilisateur. Une base plus robuste et accessible depuis plusieurs conteneurs était nécessaire.
 
-**Décision**  
-Utiliser **PostgreSQL** comme base de données relationnelle partagée entre les services.
+### Décision
+Adopter PostgreSQL comme SGBD relationnel principal du système.
 
-**Statut**  
+### Statut
 Acceptée
 
-**Conséquences**
-- Compatible avec Sequelize ORM
-- Supporte les transactions complexes et relations multiples
-- Conteneurisé avec Docker pour un déploiement reproductible
+### Conséquences
+- Transactions fiables
+- Excellente compatibilité avec Sequelize
+- Déploiement facile avec Docker
+- Familiarité acquise avec PostgreSQL dans mes cours de bases de données
 
 ---
 
-## ADR 004 — Choix de l'orchestration
+## ADR 004 – Intégration Continue avec GitHub Actions
 
-**Contexte**  
-L'application comprend plusieurs composants à faire fonctionner ensemble (API, base de données, consoles POS et maison mère).
+### Contexte
+Le projet devait intégrer une vérification automatique de la qualité du code pour chaque modification (push), sans intervention manuelle.
 
-**Décision**  
-Utiliser **Docker Compose** pour orchestrer les services et simplifier le développement local.
+### Décision
+Utiliser GitHub Actions pour exécuter automatiquement les tests (Jest) et les analyses statiques (ESLint) à chaque push.
 
-**Statut**  
+### Statut
 Acceptée
 
-**Conséquences**
-- Facile à démarrer et arrêter avec une seule commande
-- Reproductibilité de l’environnement sur toute machine
-- Simplifie l’intégration continue et les tests
+### Conséquences
+- Amélioration de la fiabilité
+- Détection immédiate des erreurs
+- Bonne pratique DevOps introduite au sein du projet
+- GitHub Actions a été choisi car je l’ai déjà utilisé dans mes projets de session précédents
 
 ---
+
+## ADR 005 – Utilisation du patron architectural MVC
+
+### Contexte
+La gestion du projet nécessite une organisation claire du code entre les données, la logique métier, et les routes HTTP. Une structure connue rend le développement plus fluide.
+
+### Décision
+Structurer l’API en suivant le modèle MVC (Model-View-Controller), avec Sequelize pour les modèles, Express pour les routes et des contrôleurs dédiés.
+
+### Statut
+Acceptée
+
+### Conséquences
+- Meilleure lisibilité du code
+- Séparation nette des responsabilités
+- Tests plus faciles à mettre en œuvre
+- Choix motivé par le fait que j’ai appris et utilisé MVC dans plusieurs cours (Node.js/Express, développement web)
