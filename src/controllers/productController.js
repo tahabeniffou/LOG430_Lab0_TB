@@ -1,16 +1,21 @@
 const Produit = require('../models/Produit');
 const Categorie = require('../models/Categorie');
 
-async function rechercherProduitParNom(nom) {
+//Recherche les produits par nom pour un magasin donné.
+async function rechercherProduitParNom(nom, magasinId) {
   const produits = await Produit.findAll({
-    where: { nom },
+    where: { nom, magasinId },
     include: Categorie
   });
   return produits;
 }
 
-async function afficherStock() {
-  const produits = await Produit.findAll({ include: Categorie });
+//Affiche le stock de tous les produits pour un magasin donné.
+async function afficherStock(magasinId) {
+  const produits = await Produit.findAll({
+    where: { magasinId },
+    include: Categorie
+  });
   return produits;
 }
 

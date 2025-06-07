@@ -5,7 +5,8 @@ const Produit = require('./Produit');
 
 const LigneVente = sequelize.define('LigneVente', {
   quantite: DataTypes.INTEGER,
-  sousTotal: DataTypes.FLOAT
+  sousTotal: DataTypes.FLOAT,
+  magasinId: { type: DataTypes.INTEGER, allowNull: false }
 });
 
 LigneVente.belongsTo(Vente);

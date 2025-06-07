@@ -1,36 +1,24 @@
-@startuml VueImplementation_Classes
+@startuml CreerVente_Implementation
 
-package "Module Présentation" {
-  [appConsole.js]
-}
+start
 
-package "Module Logique métier" {
-  [controllers/salesController.js]
-  [controllers/productController.js]
-  [controllers/stockController.js]
-}
+:Utilisateur (console POS) sélectionne des produits;
+:appConsole.js lit les entrées;
+:appConsole.js appelle salesRoutes.js;
 
-package "Module Persistance (ORM)" {
-  [models/Produit.js]
-  [models/Categorie.js]
-  [models/Vente.js]
-  [models/LigneVente.js]
-  [models/Utilisateur.js]
-  [models/Paiement.js]
-  [models/index.js]
-}
+:salesRoutes.js appelle salesController.js;
+:salesController.js utilise Sequelize;
+:Sequelize crée une vente dans la BD (table Vente);
+:Sequelize crée des lignes de vente (table LigneVente);
 
-[appConsole.js] --> [controllers/salesController.js]
-[appConsole.js] --> [controllers/productController.js]
+if ("stock suffisant ?") then (oui)
+  :Sequelize met à jour les quantités en stock;
+  :Sequelize crée un paiement (table Paiement);
+  :Retour succès (vente complète);
+else (non)
+  :Retour erreur (stock insuffisant);
+endif
 
-[controllers/salesController.js] --> [models/Vente.js]
-[controllers/salesController.js] --> [models/LigneVente.js]
-[controllers/salesController.js] --> [models/Produit.js]
-[controllers/salesController.js] --> [models/Paiement.js]
-
-[controllers/productController.js] --> [models/Produit.js]
-[controllers/productController.js] --> [models/Categorie.js]
-
-[controllers/stockController.js] --> [models/Produit.js]
+stop
 
 @enduml

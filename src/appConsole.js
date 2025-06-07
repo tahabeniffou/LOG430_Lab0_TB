@@ -1,22 +1,37 @@
 const inquirer = require('inquirer');
 const { Separator } = require('inquirer');
+const axios = require('axios');
 
+const API_URL = 'http://api:3000';
 
-const { rechercherProduitParNom, afficherStock } = require('./controllers/productController');
-const { enregistrerVente, annulerVente } = require('./controllers/salesController');
-const Utilisateur = require('./models/Utilisateur');
-const Vente = require('./models/Vente');
-const Paiement = require('./models/Paiement');
-
-// 🔒 Sélection de l’utilisateur actif
-async function selectionnerUtilisateur() {
-  const utilisateurs = await Utilisateur.findAll();
-
-  if (utilisateurs.length === 0) {
-    console.log("❌ Aucun utilisateur trouvé. Tu dois d'abord lancer le seed.");
+// 🔒 Sélection de la succursale (magasin)
+async function selectionnerMagasin() {
+  const { data: magasins } = await axios.get(`${API_URL}/maison-mere/magasins`);
+  if (!magasins || magasins.length === 0) {
+    console.log("❌ Aucun magasin trouvé. Tu dois d'abord lancer le seed.");
     process.exit(1);
   }
+  const { magasinId } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'magasinId',
+      message: '🏬 Dans quelle succursale êtes-vous ?',
+      choices: magasins.map(m => ({
+        name: `${m.nom} (${m.adresse})`,
+        value: m.id
+      }))
+    }
+  ]);
+  return magasins.find(m => m.id === magasinId);
+}
 
+// 🔒 Sélection de l’utilisateur actif pour un magasin donné
+async function selectionnerUtilisateur(magasinId) {
+  const { data: utilisateurs } = await axios.get(`${API_URL}/magasins/${magasinId}/utilisateurs`);
+  if (!utilisateurs || utilisateurs.length === 0) {
+    console.log("❌ Aucun utilisateur trouvé pour cette succursale.");
+    process.exit(1);
+  }
   const { utilisateurId } = await inquirer.prompt([
     {
       type: 'list',
@@ -28,12 +43,11 @@ async function selectionnerUtilisateur() {
       }))
     }
   ]);
-
   return utilisateurs.find(u => u.id === utilisateurId);
 }
 
 // 🧭 Menu principal
-async function mainMenu(utilisateur) {
+async function mainMenu(utilisateur, magasin) {
   while (true) {
     console.clear();
 
@@ -41,14 +55,14 @@ async function mainMenu(utilisateur) {
       {
         type: 'list',
         name: 'action',
-        message: `=== 💼 Caisse POS — Connecté : ${utilisateur.nom} (${utilisateur.role}) ===`,
+        message: `=== 💼 Caisse POS — ${magasin.nom} — Connecté : ${utilisateur.nom} (${utilisateur.role}) ===`,
         choices: [
           new Separator('─── Menu Principal ───'),
           { name: '🛒 Rechercher un produit', value: 'recherche' },
           { name: '💰 Enregistrer une vente', value: 'vente' },
           { name: '↩️ Annuler une vente', value: 'annuler' },
           { name: '📦 Consulter le stock', value: 'stock' },
-          new Separator(),
+          { name: '📦 Réapprovisionnement depuis le centre logistique', value: 'reappro' },
           { name: '❌ Quitter', value: 'exit' }
         ]
       }
@@ -63,10 +77,12 @@ async function mainMenu(utilisateur) {
           message: '🔎 Entrez le nom du produit à rechercher :'
         });
 
-        const results = await rechercherProduitParNom(nom);
+        const { data: results } = await axios.get(`${API_URL}/magasins/${magasin.id}/produits`, {
+          params: { nom }
+        });
 
         console.log('\nRésultats :\n');
-        if (results.length === 0) {
+        if (!results || results.length === 0) {
           console.log('❌ Aucun produit trouvé.');
         } else {
           results.forEach(p =>
@@ -77,62 +93,48 @@ async function mainMenu(utilisateur) {
         await pause();
         break;
       }
-
-      case 'vente': {
+      case 'reappro': {
         console.clear();
-        const produits = await afficherStock();
+        // On récupère le stock du centre logistique
+        const { data: stock } = await axios.get(`${API_URL}/logistique/stock`);
+        console.log('\nStock du centre logistique :');
+        stock.forEach(s => {
+          console.log(`- ${s.nom} : ${s.stock}`);
+        });
 
-        const { produitsChoisis } = await inquirer.prompt([
+        const { produitId, quantite } = await inquirer.prompt([
           {
-            type: 'checkbox',
-            name: 'produitsChoisis',
-            message: '🛍️ Sélectionnez les produits à vendre :',
-            choices: produits.map(p => ({
-              name: `${p.nom} ($${p.prix}) - Stock: ${p.stock}`,
-              value: p.nom
+            type: 'list',
+            name: 'produitId',
+            message: 'Quel produit réapprovisionner ?',
+            choices: stock.map(s => ({
+              name: `${s.nom} (Stock: ${s.stock})`,
+              value: s.id
             }))
+          },
+          {
+            type: 'number',
+            name: 'quantite',
+            message: 'Quantité à demander :',
+            validate: q => q > 0 ? true : 'Quantité invalide'
           }
         ]);
-
-        if (produitsChoisis.length === 0) {
-          console.log('⚠️ Aucun produit sélectionné.');
-          await pause();
-          break;
+        try {
+          // Appel à la route de réapprovisionnement (qui crée la demande)
+          await axios.post(`${API_URL}/logistique/magasins/${magasin.id}/reappro`, { produitId, quantite });
+          console.log('✅ Demande envoyée.');
+        } catch (e) {
+          console.log('❌ ' + (e.response?.data?.error || e.message));
         }
-
-        const items = [];
-
-        for (const produitNom of produitsChoisis) {
-          const produit = produits.find(p => p.nom === produitNom);
-
-          const { quantite } = await inquirer.prompt([
-            {
-              type: 'number',
-              name: 'quantite',
-              message: `Quantité pour ${produit.nom} :`,
-              validate: q => (q > 0 ? true : 'Quantité invalide')
-            }
-          ]);
-
-          items.push({ id: produit.id, qte: quantite });
-        }
-
-        await enregistrerVente(items, utilisateur.id);
-        console.log('\n✅ Vente enregistrée avec succès.');
         await pause();
         break;
       }
-
       case 'annuler': {
         console.clear();
 
-        const ventes = await Vente.findAll({
-          order: [['date', 'DESC']],
-          limit: 10,
-          include: [{ model: Paiement }]
-        });
+        const { data: ventes } = await axios.get(`${API_URL}/magasins/${magasin.id}/ventes`);
 
-        if (ventes.length === 0) {
+        if (!ventes || ventes.length === 0) {
           console.log('⚠️ Aucune vente à annuler.');
           await pause();
           break;
@@ -143,20 +145,83 @@ async function mainMenu(utilisateur) {
           name: 'venteId',
           message: '📄 Sélectionne une vente à annuler :',
           choices: ventes.map(v => ({
-            name: `#${v.id} | ${v.date.toLocaleString()} | Total: $${v.total}`,
+            name: `#${v.id} | ${new Date(v.date).toLocaleString()} | Total: $${v.total}`,
             value: v.id
           }))
         });
 
-        await annulerVente(venteId);
-        console.log('✅ Vente annulée avec succès.');
+        try {
+          await axios.post(`${API_URL}/magasins/${magasin.id}/ventes/${venteId}/annuler`);
+          console.log('✅ Vente annulée avec succès.');
+        } catch (e) {
+          console.log('❌ ' + (e.response?.data?.error || e.message));
+        }
         await pause();
         break;
       }
+      case 'vente': {
+        console.clear();
+        // On récupère les produits disponibles
+        const { data: produits } = await axios.get(`${API_URL}/magasins/${magasin.id}/produits`);
+        if (!produits || produits.length === 0) {
+          console.log('❌ Aucun produit disponible pour la vente.');
+          await pause();
+          break;
+        }
 
+        // Sélection des produits à vendre
+        const { produitsSelectionnes } = await inquirer.prompt({
+          type: 'checkbox',
+          name: 'produitsSelectionnes',
+          message: '🛒 Sélectionne les produits à vendre :',
+          choices: produits.map(p => ({
+            name: `${p.nom} ($${p.prix} | Stock: ${p.stock})`,
+            value: p.id,
+            disabled: p.stock === 0 ? 'Rupture de stock' : false
+          }))
+        });
+
+        if (!produitsSelectionnes || produitsSelectionnes.length === 0) {
+          console.log('⚠️ Aucun produit sélectionné.');
+          await pause();
+          break;
+        }
+
+        // Saisie des quantités pour chaque produit sélectionné
+        const quantites = {};
+        for (const produitId of produitsSelectionnes) {
+          const produit = produits.find(p => p.id === produitId);
+          const { quantite } = await inquirer.prompt({
+            type: 'number',
+            name: 'quantite',
+            message: `Quantité pour ${produit.nom} (stock: ${produit.stock}) :`,
+            validate: q =>
+              q > 0 && q <= produit.stock
+                ? true
+                : `Quantité invalide (max: ${produit.stock})`
+          });
+          quantites[produitId] = quantite;
+        }
+
+        // Enregistrement de la vente (correction ici)
+        try {
+          await axios.post(`${API_URL}/magasins/${magasin.id}/ventes`, {
+            utilisateurId: utilisateur.id,
+            produits: Object.entries(quantites).map(([id, qte]) => ({
+              id,
+              qte
+            }))
+          });
+          console.log('✅ Vente enregistrée avec succès.');
+        } catch (e) {
+          console.log('❌ ' + (e.response?.data?.error || e.message));
+        }
+        await pause();
+        break;
+      }
       case 'stock': {
         console.clear();
-        const produits = await afficherStock();
+        const { data: produits } = await axios.get(`${API_URL}/magasins/${magasin.id}/stock`);
         console.log('\n📦 État du stock :\n');
         produits.forEach(p =>
           console.log(`- ${p.nom} (${p.Categorie?.nom || 'Sans catégorie'}) - Stock: ${p.stock}`)
@@ -185,8 +250,9 @@ async function pause() {
 // 🚀 Lancement
 async function start() {
   console.clear();
-  const utilisateur = await selectionnerUtilisateur();
-  await mainMenu(utilisateur);
+  const magasin = await selectionnerMagasin();
+  const utilisateur = await selectionnerUtilisateur(magasin.id);
+  await mainMenu(utilisateur, magasin);
 }
 
 start();

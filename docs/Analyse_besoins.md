@@ -1,19 +1,60 @@
-🟢 Besoins Fonctionnels :
+# 📄 Spécification des besoins
 
-Recherche de produits : L’utilisateur doit pouvoir rechercher un produit par identifiant, nom ou catégorie.
+Ce document présente les besoins fonctionnels et non-fonctionnels du système de point de vente distribué développé dans le cadre du laboratoire 2 du cours LOG430.
 
-Enregistrer une vente : L’utilisateur peut enregistrer une vente en sélectionnant plusieurs produits et obtenir automatiquement le calcul du total à payer.
+---
 
-Gérer les retours : L’utilisateur doit pouvoir annuler une vente, remettant ainsi le stock à jour.
+## Besoins fonctionnels
 
-Consulter l’état du stock : Afficher la quantité disponible en temps réel pour chaque produit.
+### Côté magasin (console POS)
 
-🔵 Besoins Non-Fonctionnels :
+- **Authentification simplifiée** : sélection d’un magasin et d’un utilisateur (employé) pour la session active.
+- **Recherche de produits** : par nom, catégorie ou identifiant.
+- **Consultation du stock local** : visualiser en temps réel les quantités disponibles pour chaque produit.
+- **Création d’une vente** :
+  - Sélection d’un ou plusieurs produits.
+  - Calcul automatique du total.
+  - Réduction automatique du stock.
+- **Paiement** : enregistrement d’un paiement lié à la vente.
+- **Retour / annulation de vente** : possibilité d’annuler une vente existante, avec remise à jour automatique du stock.
+- **Demande de réapprovisionnement** : possibilité d’envoyer une demande de stock vers le centre logistique.
 
-Fiabilité : Les données doivent rester cohérentes, notamment pour le stock après chaque vente ou retour.
+### Côté maison mère
 
-Performance : L’application doit répondre rapidement (en quelques secondes maximum).
+- **Tableau de bord global** : vue consolidée de tous les magasins avec état des stocks.
+- **Rapport consolidé des ventes** :
+  - Chiffre d’affaires par magasin.
+  - Classement des produits les plus vendus.
+  - État du stock par produit pour chaque magasin.
 
-Simplicité d’utilisation : Interface minimaliste en mode console.
+### Côté logistique / centre de distribution
 
-Facilité de maintenance : Code clair, bien organisé, documenté et testé automatiquement.
+- **Affichage du stock central (logistique)** : visualiser les produits et quantités disponibles.
+- **Réception des demandes de réapprovisionnement** : les demandes sont enregistrées pour traitement futur (simulé pour ce lab).
+
+---
+
+## Besoins non-fonctionnels
+
+- **Fiabilité des données** :
+  - Le stock est mis à jour automatiquement après chaque vente, retour ou réapprovisionnement.
+  - Vérification de la disponibilité du stock avant validation d’une vente.
+
+- **Performance** :
+  - Les interactions console doivent se faire en moins de quelques secondes.
+  - Accès rapide à la base de données grâce à Sequelize.
+
+- **Utilisabilité** :
+  - Interface en mode console claire et interactive (menus guidés avec Inquirer.js).
+  - Affichage structuré à l’aide de `cli-table3` et couleurs avec `chalk`.
+
+- **Modularité et extensibilité** :
+  - Code organisé par rôle (magasin, maison mère, logistique).
+  - API REST séparée pour la logique métier (Express).
+
+- **Testabilité et qualité** :
+  - Présence de tests unitaires (Jest).
+  - CI automatisée avec GitHub Actions.
+  - Linting intégré avec ESLint.
+
+---
