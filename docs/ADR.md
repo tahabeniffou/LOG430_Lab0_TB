@@ -15,7 +15,6 @@ Acceptée
 - Exécution reproductible sur toutes les machines
 - Déploiement simple sur la VM de production
 - Environnement isolé pour chaque composant
-- Ce choix a été facilité par ma familiarité avec Docker, déjà utilisé dans mes cours précédents
 
 ---
 
@@ -34,7 +33,7 @@ Acceptée
 - Clarifie l’architecture (séparation des responsabilités)
 - Permet l’évolution des consoles indépendamment de la logique métier
 - Favorise la supervision centralisée
-- Choix basé sur mon expérience avec Express.js, utilisé dans d'autres projets universitaires
+- Choix basé sur mon expérience avec Express.js
 
 ---
 
@@ -53,7 +52,6 @@ Acceptée
 - Transactions fiables
 - Excellente compatibilité avec Sequelize
 - Déploiement facile avec Docker
-- Familiarité acquise avec PostgreSQL dans mes cours de bases de données
 
 ---
 
@@ -72,7 +70,6 @@ Acceptée
 - Amélioration de la fiabilité
 - Détection immédiate des erreurs
 - Bonne pratique DevOps introduite au sein du projet
-- GitHub Actions a été choisi car je l’ai déjà utilisé dans mes projets de session précédents
 
 ---
 
