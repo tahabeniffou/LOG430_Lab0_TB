@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-=======
+
 #LOG430 - POS Distribué
 
 Ce projet simule une solution distribuée de point de vente (POS) avec plusieurs rôles :
@@ -56,17 +55,16 @@ docker compose up --build api db
 ### 2. Lancer la console POS (magasin)
 
 ```bash
-docker compose run -it pos-app
+docker exec -it pos-app node src/appConsole.js
 ```
 
 ### 3. Lancer la console Maison Mère
 
 ```bash
-docker compose run -it maison-mere
+docker exec -it maison-mere node src/maisonMereConsole.js
 ```
 
 ---
->>>>>>> LOG430_Lab2
 
 ## Tests
 
