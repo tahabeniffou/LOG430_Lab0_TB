@@ -1,70 +1,41 @@
-// server.js
+// src/api/servers.js
 require('dotenv').config();
-const express     = require('express');
-const cors        = require('cors');
-const restApi     = require('./src/api/rest');
-const { swaggerSpec } = require('./src/api/rest/swagger');
-const swaggerUi   = require('swagger-ui-express');
-const redoc       = require('redoc');
+const express       = require('express');
+const cors          = require('cors');
+const restModule    = require('./rest/index.js');
+const restApi       = restModule.default || restModule;
+const swaggerModule = require('./rest/swagger.js');
+const swaggerSpec   = swaggerModule.swaggerSpec || swaggerModule.default || swaggerModule;
+const swaggerUi     = require('swagger-ui-express');
+const redocExpress  = require('redoc-express');
 
 const app = express();
 
-const allowedOrigins = process.env.CORS_ORIGINS
-  ? process.env.CORS_ORIGINS.split(',')
-  : [];
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Origin not allowed by CORS'));
-    }
-  }
-}));
-
+app.use(cors({ origin: process.env.CORS_ORIGINS?.split(',') || '*' }));
 app.use(express.json());
 
-const AUTH_TOKEN = process.env.AUTH_TOKEN;
-function authMiddleware(req, res, next) {
+app.use('/api/v1', restApi);
 
-  if (
-    req.path.startsWith('/api-docs') ||
-    req.path === '/redoc' ||
-    req.path === '/api-docs/swagger.json'
-  ) {
-    return next();
-  }
-  const authHeader = req.headers.authorization;
-  if (authHeader && authHeader === `Bearer ${AUTH_TOKEN}`) {
-    return next();
-  }
-  res.status(401).json({ message: 'Unauthorized' });
-}
-
-
-app.use('/api/v1', authMiddleware, restApi);
-
-app.use(
-  '/api-docs',
-  swaggerUi.serve,
-  swaggerUi.setup(swaggerSpec, { explorer: true })
-);
-
-app.get('/api-docs/swagger.json', (req, res) => {
-  res.setHeader('Content-Type', 'application/json');
-  res.send(swaggerSpec);
-});
-
-
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
+app.get('/api-docs/swagger.json', (req, res) => res.json(swaggerSpec));
 app.get(
   '/redoc',
-  redoc({ title: 'API LOG430 Lab TB POS', specUrl: '/api-docs/swagger.json' })
+  redocExpress({
+    title: 'API LOG430 Lab TB POS',
+    specUrl: '/api-docs/swagger.json'
+  })
 );
 
 app.use((err, req, res, next) => {
   console.error(err);
   const status = err.status || 500;
-  res.status(status).json({ message: err.message });
+  res.status(status).json({
+    timestamp: new Date().toISOString(),
+    status,
+    error:   err.name,
+    message: err.message,
+    path:    req.originalUrl
+  });
 });
 
 const PORT = process.env.PORT || 3000;
