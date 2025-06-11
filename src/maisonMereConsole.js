@@ -1,9 +1,10 @@
+// maisonMereConsole.js
 const inquirer = require('inquirer');
-const axios = require('axios');
-const Table = require('cli-table3');
-const chalk = require('chalk').default;
+const axios    = require('axios');
+const Table    = require('cli-table3');
+const chalk    = require('chalk').default;
 
-const API_URL = 'http://api:3000';
+const API_URL = 'http://localhost:3000/api/v1';
 
 function resetConsole() {
   console.clear();
@@ -19,11 +20,17 @@ async function mainMenu() {
       choices: [
         { name: 'Générer un rapport consolidé des ventes', value: 'rapport' },
         { name: 'Visualiser le tableau de bord des magasins', value: 'dashboard' },
-        { name: 'Quitter', value: 'exit' }
+        { name: 'Quitter',                            value: 'exit' }
       ]
     }]);
+
     if (action === 'rapport') {
-      const { data: rapport } = await axios.get(`${API_URL}/maison-mere/rapport`);
+      // Appel à /rapports?type=ventes
+      const { data: rapport } = await axios.get(
+        `${API_URL}/rapports`,
+        { params: { type: 'ventes' } }
+      );
+
       console.log(chalk.bold(chalk.cyan('\n=== Rapport consolidé des ventes ===\n')));
       rapport.forEach(r => {
         console.log(chalk.bold(`🏬 ${r.magasin.nom} (${r.magasin.adresse})`));
@@ -46,19 +53,29 @@ async function mainMenu() {
         console.log(tableStock.toString());
         console.log();
       });
+
       await pause();
     }
+
     if (action === 'dashboard') {
-      const { data: dashboard } = await axios.get(`${API_URL}/maison-mere/dashboard`);
+      // Appel à /rapports?type=dashboard
+      const { data: dashboard } = await axios.get(
+        `${API_URL}/rapports`,
+        { params: { type: 'dashboard' } }
+      );
+
       console.log(chalk.bold(chalk.cyan('\n=== Tableau de bord des magasins ===\n')));
       dashboard.forEach(d => {
         console.log(chalk.bold(`🏬 ${d.magasin.nom} (${d.magasin.adresse})`));
         console.log(chalk.green(`Chiffre d'affaires: $${d.chiffreAffaires.toFixed(2)}`));
-        if (d.ruptures.length)
+
+        if (d.ruptures?.length) {
           console.log(chalk.red(`⚠️ Ruptures de stock: ${d.ruptures.join(', ')}`));
-        if (d.surstocks.length)
+        }
+        if (d.surstocks?.length) {
           console.log(chalk.yellow(`📦 Surstocks: ${d.surstocks.join(', ')}`));
-        if (d.tendance && d.tendance.length) {
+        }
+        if (d.tendance?.length) {
           console.log(chalk.cyan('Tendance hebdomadaire :'));
           d.tendance.forEach(t => {
             console.log(`  - ${t.jour} : $${t.total.toFixed(2)}`);
@@ -66,9 +83,14 @@ async function mainMenu() {
         }
         console.log();
       });
+
       await pause();
     }
-    if (action === 'exit') break;
+
+    if (action === 'exit') {
+      console.log(chalk.gray('\n👋 À bientôt !'));
+      break;
+    }
   }
 }
 
@@ -80,4 +102,7 @@ async function pause() {
   });
 }
 
-mainMenu();
+mainMenu().catch(err => {
+  console.error(chalk.red(err.message));
+  process.exit(1);
+});
