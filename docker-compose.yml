@@ -25,11 +25,9 @@ services:
       POSTGRES_DB: posdb
       POSTGRES_HOST: db
     working_dir: /app
-    volumes:
-      - .:/app
     stdin_open: true
     tty: true
-    command: node src/appConsole.js
+    command: ["node", "src/appConsole.js"]
 
   api:
     build: .
@@ -42,7 +40,7 @@ services:
       POSTGRES_DB: posdb
       POSTGRES_HOST: db
     working_dir: /app
-    command: node src/api/servers.js
+    command: ["node", "src/api/servers.js"]
     ports:
       - "3000:3000"
 
@@ -57,11 +55,9 @@ services:
       POSTGRES_DB: posdb
       POSTGRES_HOST: db
     working_dir: /app
-    volumes:
-      - .:/app
     stdin_open: true
     tty: true
-    command: node src/maisonMereConsole.js
+    command: ["node", "src/maisonMereConsole.js"]
 
 volumes:
   pgdata:
